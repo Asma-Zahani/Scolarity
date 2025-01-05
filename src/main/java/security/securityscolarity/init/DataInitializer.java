@@ -11,9 +11,7 @@ import security.securityscolarity.repository.AdminRepository;
 import security.securityscolarity.repository.DayRepository;
 import security.securityscolarity.service.IMPL.UserService;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 @Component

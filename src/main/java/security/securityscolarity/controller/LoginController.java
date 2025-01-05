@@ -4,16 +4,21 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import security.securityscolarity.entity.PasswordResetToken;
 import security.securityscolarity.entity.User;
+import security.securityscolarity.repository.PasswordResetTokenRepository;
 import security.securityscolarity.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 public class LoginController {
@@ -21,7 +26,9 @@ public class LoginController {
     @Autowired
     UserRepository userRepository;
     @Autowired
-    JavaMailSender mailSender;
+    JavaMailSender emailSender;
+    @Autowired
+    private PasswordResetTokenRepository passwordResetTokenRepository;
 
     @GetMapping("/login")
     public String login(){
@@ -35,48 +42,38 @@ public class LoginController {
 
     @PostMapping("/forgetPassword")
     public String handleForgetPassword(@ModelAttribute("email") String email, HttpServletRequest request) {
-        System.out.println(email);
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isEmpty()) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isEmpty()) {
             request.setAttribute("error", "Aucun compte associé à cet e-mail.");
             return "forgetPassword";
         }
+        User user = userOptional.get();
 
-        sendResetEmail(user.get());
+        String token = generateResetToken();
+
+        PasswordResetToken resetToken = new PasswordResetToken(token, user.getId(), LocalDateTime.now().plusHours(1));
+        passwordResetTokenRepository.save(resetToken);
+
+        sendResetEmail(user, token);
 
         request.setAttribute("message", "Un lien de réinitialisation a été envoyé à votre adresse e-mail.");
         return "login";
     }
 
-    private void sendResetEmail(User user) {
-        String subject = "Forget Password";
-        String body = """
-            <html>
-                <body>
-                    <p>You have requested to recover your password.</p>
-                    <p><b>Login:</b>""" + user.getEmail() + """
-                    </p>
-                    <p><b>Password:</b>""" + user.getPassword() + """
-                    </p>
-                    <p>Please log in and change your password immediately.</p>
-                    <p>Best regards,<br>The Support Team.</p>
-                </body>
-            </html>
-            """;
+    public void sendResetEmail(User user, String token) {
+        String subject = "Réinitialisation de mot de passe";
+        String body = "Cliquez sur ce lien pour réinitialiser votre mot de passe : "
+                + "http://localhost:8080/resetPassword?token=" + token;
 
-        MimeMessage message = mailSender.createMimeMessage();
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(user.getEmail());
+        message.setSubject(subject);
+        message.setText(body);
 
-        try {
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setTo(user.getEmail());
-            helper.setSubject(subject);
-            helper.setText(body, true); // Enable HTML content
-            mailSender.send(message);
-            System.out.println("Email sent to: " + user.getEmail());
-        } catch (MessagingException e) {
-            e.printStackTrace();
-            System.out.println("Failed to send email to: " + user.getEmail());
-        }
+        emailSender.send(message);
     }
 
+    private String generateResetToken() {
+        return UUID.randomUUID().toString();
+    }
 }

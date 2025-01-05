@@ -39,7 +39,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/dist/**" , "/forgetPassword", "/api/**").permitAll()
+                        .requestMatchers("/dist/**" , "/forgetPassword", "/resetPassword", "/api/**").permitAll()
                         .requestMatchers(
                                 "/universities/**",
                                 "/universityAdmins/**",
