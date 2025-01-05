@@ -26,20 +26,4 @@ public class RestUserController {
     public User getUserById(@PathVariable("userId") Long id) {
         return userService.findByUserID(id);
     }
-
-    @PostMapping
-    public User addUser(@RequestBody User user) {
-        return userService.addUser(user);
-    }
-
-    @DeleteMapping("/{userId}")
-    public String deleteUser(@PathVariable("userId") Long id) {
-        userService.deleteUser(id);
-        return "User with ID " + id + " deleted successfully";
-    }
-
-    @PutMapping("/{userId}")
-    public User updateUser(@PathVariable("userId") Long id, @RequestBody User user) {
-        return userService.updateUser(id, user);
-    }
 }

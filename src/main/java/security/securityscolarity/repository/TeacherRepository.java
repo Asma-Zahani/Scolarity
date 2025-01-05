@@ -9,6 +9,7 @@ import java.util.List;
 
 @Repository
 public interface TeacherRepository extends JpaRepository<Teacher, Long> {
+    Teacher findTeacherById(long id);
     List<Teacher> findByUniversity(University university);
     long countByUniversity(University university);
 }

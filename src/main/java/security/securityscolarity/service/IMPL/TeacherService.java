@@ -10,6 +10,7 @@ import security.securityscolarity.entity.Role;
 import security.securityscolarity.entity.Subject;
 import security.securityscolarity.entity.Teacher;
 import security.securityscolarity.entity.University;
+import security.securityscolarity.repository.ScheduleRepository;
 import security.securityscolarity.repository.SubjectRepository;
 import security.securityscolarity.repository.TeacherRepository;
 import security.securityscolarity.service.ITeacherService;
@@ -30,6 +31,8 @@ public class TeacherService implements ITeacherService{
     private SubjectRepository subjectRepository;
     @Autowired
     private UniversityService universityService;
+    @Autowired
+    private ScheduleRepository scheduleRepository;
 
     public long getTeacherCount() {
         return teacherRepository.count();
@@ -67,18 +70,28 @@ public class TeacherService implements ITeacherService{
     }
 
     public void deleteTeacher(Long id) {
+        Teacher teacher = teacherRepository.findById(id).get();
+
+        teacher.getSubjects().forEach(subject -> subject.getTeachers().remove(teacher));
+
+        if (teacher.getSchedules() != null) {
+            scheduleRepository.deleteAll(teacher.getSchedules());
+        }
         teacherRepository.deleteById(id);
     }
 
     public Teacher updateTeacher(Long id , Teacher teacher) {
-        Teacher teacherToUpdate = teacherRepository.findById(id).get();
-        teacherToUpdate.setId(id);
+        Teacher teacherToUpdate = teacherRepository.findTeacherById(id);
         teacherToUpdate.setFirstName(teacher.getFirstName());
         teacherToUpdate.setLastName(teacher.getLastName());
         teacherToUpdate.setEmail(teacher.getEmail());
-        teacherToUpdate.setPassword(new BCryptPasswordEncoder().encode(teacher.getPassword()));
+        if (teacher.getPassword() != null && !teacher.getPassword().isEmpty()) {
+            String encodedPassword = new BCryptPasswordEncoder().encode(teacher.getPassword());
+            teacherToUpdate.setPassword(encodedPassword);
+        }
         teacherToUpdate.setActive(teacher.isActive());
         teacherToUpdate.setSpecialite(teacher.getSpecialite());
+        teacherToUpdate.setSubjects(teacher.getSubjects());
         return teacherRepository.save(teacherToUpdate);
     }
 

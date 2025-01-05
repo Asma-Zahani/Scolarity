@@ -118,7 +118,13 @@ public class SubjectController {
     public String updateSubject(@RequestParam(name = "groupIds", required = false) List<Long> groupIds,
                                 @RequestParam(name = "teacherIds", required = false) List<Long> teacherIds,
                                 @ModelAttribute Subject subject, RedirectAttributes redirectAttributes) {
-        subjectService.updateSubject(subject.getSubjectId(),subject);
+        // Mettre à jour les informations principales du sujet
+        subjectService.updateSubject(subject.getSubjectId(), subject);
+
+        // Effacer les groupes et enseignants existants
+        subjectService.clearGroupsAndTeachers(subject.getSubjectId());
+
+        // Réassigner les groupes si fournis
         if (groupIds != null) {
             for (Long groupId : groupIds) {
                 Group group = groupService.findByGroupID(groupId);
@@ -130,6 +136,7 @@ public class SubjectController {
             }
         }
 
+        // Réassigner les enseignants si fournis
         if (teacherIds != null) {
             for (Long teacherId : teacherIds) {
                 Teacher teacher = teacherService.findByTeacherID(teacherId);
@@ -140,6 +147,7 @@ public class SubjectController {
                 subjectService.assignTeacher(subject.getSubjectId(), teacher.getId());
             }
         }
+
         return "redirect:/subject/all";
     }
 

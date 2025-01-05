@@ -32,6 +32,7 @@ public class Building implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "university_id")
+    @ToString.Exclude
     @JsonIgnore
     private University university;
 

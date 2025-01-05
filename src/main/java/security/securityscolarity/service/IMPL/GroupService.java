@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import security.securityscolarity.entity.*;
 import security.securityscolarity.repository.GroupRepository;
+import security.securityscolarity.repository.ScheduleRepository;
+import security.securityscolarity.repository.SubGroupRepository;
 import security.securityscolarity.repository.SubjectRepository;
 import security.securityscolarity.service.IGroupService;
 
@@ -20,6 +22,10 @@ public class GroupService implements IGroupService{
     private SubjectRepository subjectRepository;
     @Autowired
     private UniversityService universityService;
+    @Autowired
+    private SubGroupService subGroupService;
+    @Autowired
+    private ScheduleRepository scheduleRepository;
 
     public List<Group> findAll() {
         return groupRepository.findAll();
@@ -50,20 +56,24 @@ public class GroupService implements IGroupService{
         Group group = groupRepository.findByGroupId(id);
         if (group.getSubGroups() != null) {
             for (SubGroup subGroup : group.getSubGroups()) {
-                subGroup.setGroup(null);
+                subGroupService.deleteSubGroup(subGroup.getSubGroupId());
             }
+        }
+        if (group.getSchedules() != null) {
+            scheduleRepository.deleteAll(group.getSchedules());
         }
         groupRepository.deleteById(id);
     }
 
-    public Group updateGroup(Long id , Group Group) {
+    public Group updateGroup(Long id , Group group) {
         Group groupToUpdate = groupRepository.findByGroupId(id);
         groupToUpdate.setGroupId(id);
-        groupToUpdate.setGroupName(Group.getGroupName());
-        groupToUpdate.setGroupDescription(Group.getGroupDescription());
-        groupToUpdate.setLearnersCount(Group.getLearnersCount());
-        groupToUpdate.setDepartment(Group.getDepartment());
-        groupToUpdate.setGroupYear(Group.getGroupYear());
+        groupToUpdate.setGroupName(group.getGroupName());
+        groupToUpdate.setGroupDescription(group.getGroupDescription());
+        groupToUpdate.setLearnersCount(group.getLearnersCount());
+        groupToUpdate.setDepartment(group.getDepartment());
+        groupToUpdate.setGroupYear(group.getGroupYear());
+        groupToUpdate.setSubjects(group.getSubjects());
         return groupRepository.save(groupToUpdate);
     }
 
@@ -74,5 +84,13 @@ public class GroupService implements IGroupService{
         }
         groupRepository.save(group);
         subjectRepository.saveAll(subjects);
+    }
+
+    public void clearSubjects(Long groupId) {
+        Group group = groupRepository.findByGroupId(groupId);
+
+        group.getSubjects().forEach(subject -> subject.getGroups().remove(group));
+
+        groupRepository.save(group);
     }
 }

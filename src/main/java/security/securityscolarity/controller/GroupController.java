@@ -150,15 +150,17 @@ public class GroupController {
     @PostMapping("/updateGroup")
     public String updateGroup(@ModelAttribute Group group,
                               @RequestParam(name = "subjectIds", required = false) List<Long> subjectIds) {
-        groupService.updateGroup(group.getGroupId(),group);
         if (subjectIds != null && !subjectIds.isEmpty()) {
+            Set<Subject> subjects = new HashSet<>();
             for (Long id : subjectIds) {
                 Subject subject = subjectService.findBySubjectID(id);
                 if (subject != null) {
-                    subjectService.assignGroup(subject.getSubjectId(),group.getGroupId());
+                    subjects.add(subject);
                 }
             }
+            group.setSubjects(subjects);
         }
+        groupService.updateGroup(group.getGroupId(),group);
         return "redirect:/group/all";
     }
 }

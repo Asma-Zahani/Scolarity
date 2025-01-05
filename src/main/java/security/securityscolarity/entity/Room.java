@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Setter
 @Getter
@@ -34,4 +36,9 @@ public class Room {
     @JoinColumn(name = "constraint_id")
     @JsonManagedReference(value = "constraint-rooms")
     private RoomConstraint constraint;
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "room-schedules")
+    @ToString.Exclude
+    private List<Schedule> schedules;
 }

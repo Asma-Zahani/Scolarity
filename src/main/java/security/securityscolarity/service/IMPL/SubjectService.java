@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import security.securityscolarity.entity.*;
 import security.securityscolarity.repository.GroupRepository;
+import security.securityscolarity.repository.ScheduleRepository;
 import security.securityscolarity.repository.SubjectRepository;
 import security.securityscolarity.repository.TeacherRepository;
 import security.securityscolarity.service.ISubjectService;
@@ -20,6 +21,8 @@ public class SubjectService implements ISubjectService{
     private GroupRepository groupRepository;
     @Autowired
     private UniversityService universityService;
+    @Autowired
+    private ScheduleRepository scheduleRepository;
 
     public int getSubjectCountByGroup(Long groupId) {
         return subjectRepository.countByGroupId(groupId);
@@ -75,6 +78,10 @@ public class SubjectService implements ISubjectService{
         subject.getGroups().forEach(group -> group.getSubjects().remove(subject));
         subject.getTeachers().forEach(teacher -> teacher.getSubjects().remove(subject));
 
+        if (subject.getSchedules() != null) {
+            scheduleRepository.deleteAll(subject.getSchedules());
+        }
+
         subjectRepository.deleteById(id);
     }
 
@@ -107,6 +114,15 @@ public class SubjectService implements ISubjectService{
 
         subject.getGroups().add(group);
         group.getSubjects().add(subject);
+
+        subjectRepository.save(subject);
+    }
+
+    public void clearGroupsAndTeachers(Long subjectId) {
+        Subject subject = this.findBySubjectID(subjectId);
+
+        subject.getGroups().forEach(group -> group.getSubjects().remove(subject));
+        subject.getTeachers().forEach(teacher -> teacher.getSubjects().remove(subject));
 
         subjectRepository.save(subject);
     }

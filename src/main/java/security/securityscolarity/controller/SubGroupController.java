@@ -129,6 +129,9 @@ public class SubGroupController {
     public String updateSubGroup(@ModelAttribute SubGroup subGroup,
                                  @RequestParam(name = "studentIds", required = false) List<Long> studentIds) {
         subGroupService.updateSubGroup(subGroup.getSubGroupId(),subGroup);
+
+        subGroupService.clearStudents(subGroup.getSubGroupId());
+
         if (studentIds != null && !studentIds.isEmpty()) {
             for (Long id : studentIds) {
                 Student student = studentService.findByStudentID(id);

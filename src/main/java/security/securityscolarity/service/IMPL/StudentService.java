@@ -61,11 +61,12 @@ public class StudentService implements IStudentService {
 
     public Student updateStudent(Long id , Student student) {
         Student studentToUpdate = studentRepository.findById(id).get();
-        studentToUpdate.setId(id);
         studentToUpdate.setFirstName(student.getFirstName());
         studentToUpdate.setLastName(student.getLastName());
         studentToUpdate.setEmail(student.getEmail());
-        studentToUpdate.setPassword(new BCryptPasswordEncoder().encode(student.getPassword()));
+        if (student.getPassword() != null && !student.getPassword().isEmpty()) {
+            studentToUpdate.setPassword(new BCryptPasswordEncoder().encode(student.getPassword()));
+        }
         studentToUpdate.setActive(student.isActive());
         studentToUpdate.setLevel(student.getLevel());
         studentToUpdate.setSubGroup(student.getSubGroup());
@@ -99,4 +100,13 @@ public class StudentService implements IStudentService {
     public int countStudentsByGroup(Long groupId) {
         return studentRepository.countBySubGroup_Group_GroupId(groupId);
     }
+
+    public int countStudentsByGroupExcludingCurrentUser(Long groupId, Long userId) {
+        return studentRepository.countBySubGroup_Group_GroupIdAndIdNot(groupId, userId);
+    }
+
+    public List<Student> findStudentsByGroupExcludingCurrentUser(Long groupId, Long userId) {
+        return studentRepository.findBySubGroup_Group_GroupIdAndIdNot(groupId, userId);
+    }
+
 }

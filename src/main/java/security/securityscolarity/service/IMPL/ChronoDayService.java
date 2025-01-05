@@ -10,6 +10,7 @@ import security.securityscolarity.entity.ChronoDay;
 import security.securityscolarity.entity.ChronoDayId;
 import security.securityscolarity.entity.University;
 import security.securityscolarity.repository.ChronoDayRepository;
+import security.securityscolarity.repository.ScheduleRepository;
 import security.securityscolarity.service.IChronoDayService;
 
 import java.util.List;
@@ -23,7 +24,9 @@ public class ChronoDayService implements IChronoDayService {
     @Autowired
     ChronoDayRepository chronoDayRepository;
     @Autowired
-    private UniversityService universityService;
+    UniversityService universityService;
+    @Autowired
+    ScheduleRepository scheduleRepository;
 
     public List<ChronoDay> findAll() {
         return chronoDayRepository.findAll();
@@ -39,8 +42,10 @@ public class ChronoDayService implements IChronoDayService {
         return chronoDayRepository.save(chronoDay);
     }
 
+    @Transactional
     @Override
     public void deleteChronoDay(ChronoDayId id) {
+        scheduleRepository.deleteScheduleByIdChronoAndIdDay(id.getChrono(), id.getDay());
         chronoDayRepository.deleteById(id);
     }
 

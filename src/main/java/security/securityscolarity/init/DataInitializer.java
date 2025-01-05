@@ -12,6 +12,8 @@ import security.securityscolarity.repository.DayRepository;
 import security.securityscolarity.service.IMPL.UserService;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -26,20 +28,20 @@ public class DataInitializer {
 
     @PostConstruct
     public void initDay() {
-        Map<String, Integer> days = Map.of(
-                "Lundi", 1,
-                "Mardi", 2,
-                "Mercredi", 3,
-                "Jeudi", 4,
-                "Vendredi", 5,
-                "Samedi", 6
-        );
+        Map<String, Integer> days = new LinkedHashMap<>();
+        days.put("Lundi", 1);
+        days.put("Mardi", 2);
+        days.put("Mercredi", 3);
+        days.put("Jeudi", 4);
+        days.put("Vendredi", 5);
+        days.put("Samedi", 6);
+
         for (Map.Entry<String, Integer> entry : days.entrySet()) {
             String dayName = entry.getKey();
             Integer dayNumber = entry.getValue();
 
             if (dayRepository.findByDayName(dayName) == null) {
-                dayRepository.save(new Day(dayName, dayNumber));
+                dayRepository.save(new Day((long) dayNumber, dayName, dayNumber));
             }
         }
     }

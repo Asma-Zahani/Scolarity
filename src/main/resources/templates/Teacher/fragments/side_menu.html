@@ -25,14 +25,39 @@
                         Schedule
                     </div>
                 </div>
-                <a th:if="${!schedules.isEmpty()}" th:href="@{/teacher/schedule}" th:class="${currentUrl == '/teacher/schedule'} ? 'side-menu side-menu--active' : 'side-menu'">
+                <a th:if="${!schedules.isEmpty()}"  href="javascript:;" th:class="${currentUrl == '/teacher/schedule' or currentUrl == '/teacher/schedule/selectGroup' or currentUrl == '/teacher/schedule/findScheduleByGroup'} ? 'side-menu side-menu--active' : 'side-menu'">
                     <div class="side-menu__icon">
                         <i data-tw-merge="" data-lucide="calendar-check" class="stroke-1.5 w-5 h-5"></i>
                     </div>
                     <div class="side-menu__title">
                         Schedule
+                        <div class="side-menu__sub-icon transform" th:classappend="${currentUrl == '/teacher/schedule' or currentUrl == '/teacher/schedule/selectGroup' or currentUrl == '/teacher/schedule/findScheduleByGroup'} ? 'rotate-180' : ''">
+                            <i data-tw-merge="" data-lucide="chevron-down" class="stroke-1.5 w-5 h-5"></i>
+                        </div>
                     </div>
                 </a>
+                <ul th:if="${!schedules.isEmpty()}" th:class="${currentUrl == '/teacher/schedule' or currentUrl == '/teacher/schedule/selectGroup' or currentUrl == '/teacher/schedule/findScheduleByGroup'} ? 'side-menu__sub-open' : ''">
+                    <li>
+                        <a th:href="@{/teacher/schedule}" th:class="${currentUrl == '/teacher/schedule'} ? 'side-menu side-menu--active' : 'side-menu'">
+                            <div class="side-menu__icon">
+                                <i data-tw-merge="" data-lucide="calendar" class="stroke-1.5 w-5 h-5"></i>
+                            </div>
+                            <div class="side-menu__title">
+                                My Schedule
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/teacher/schedule/selectGroup}" th:class="${currentUrl == '/teacher/schedule/selectGroup' or currentUrl == '/teacher/schedule/findScheduleByGroup'} ? 'side-menu side-menu--active' : 'side-menu'">
+                            <div class="side-menu__icon">
+                                <i data-tw-merge="" data-lucide="search" class="stroke-1.5 w-5 h-5"></i>
+                            </div>
+                            <div class="side-menu__title">
+                                Schedule by Group
+                            </div>
+                        </a>
+                    </li>
+                </ul>
             </li>
             <li>
                 <a th:href="@{/teacher/teachers}" th:class="${currentUrl == '/teacher/teachers'} ? 'side-menu side-menu--active' : 'side-menu'">
@@ -40,12 +65,20 @@
                         <i data-tw-merge="" data-lucide="users" class="stroke-1.5 w-5 h-5"></i>
                     </div>
                     <div class="side-menu__title">
-                        Teachers
+                        Co-workers
                     </div>
                 </a>
             </li>
             <li>
-                <a th:href="@{/teacher/selectGroup}" th:class="${currentUrl == '/teacher/selectGroup' or currentUrl == '/teacher/students'} ? 'side-menu side-menu--active' : 'side-menu'">
+                <div th:if="${schedules.isEmpty()}" class="side-menu side-menu--disabled">
+                    <div class="side-menu__icon">
+                        <i data-tw-merge="" data-lucide="user-x" class="stroke-1.5 w-5 h-5"></i>
+                    </div>
+                    <div class="side-menu__title">
+                        Students
+                    </div>
+                </div>
+                <a th:if="${!schedules.isEmpty()}" th:href="@{/teacher/selectGroup}" th:class="${currentUrl == '/teacher/selectGroup' or currentUrl == '/teacher/students'} ? 'side-menu side-menu--active' : 'side-menu'">
                     <div class="side-menu__icon">
                         <i data-tw-merge="" data-lucide="users" class="stroke-1.5 w-5 h-5"></i>
                     </div>

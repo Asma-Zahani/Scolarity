@@ -66,6 +66,9 @@ public class IndexController {
 		CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		User user = userService.findByUserID(userDetail.getId());
 		if (user instanceof UniversityAdmin universityAdmin) {
+			List<Teacher> allTeachers = teacherService.findTeacherByUniversity(universityAdmin.getUniversity());
+			List<Teacher> limitedTeachers = allTeachers.size() > 5 ? allTeachers.subList(0, 5) : allTeachers;
+			model.addAttribute("limitedTeachers",limitedTeachers);
 			model.addAttribute("students", studentService.countByUniversity(universityAdmin.getUniversity()));
 			model.addAttribute("teachers", teacherService.countByUniversity(universityAdmin.getUniversity()));
 			model.addAttribute("subjects", subjectService.countByUniversity(universityAdmin.getUniversity()));

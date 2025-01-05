@@ -1,11 +1,13 @@
 package security.securityscolarity.service.IMPL;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import security.securityscolarity.entity.Building;
 import security.securityscolarity.entity.Chrono;
 import security.securityscolarity.entity.University;
 import security.securityscolarity.repository.ChronoRepository;
+import security.securityscolarity.repository.ScheduleRepository;
 import security.securityscolarity.service.IChronoService;
 
 import java.util.List;
@@ -16,6 +18,8 @@ public class ChronoService implements IChronoService{
     ChronoRepository chronoRepository;
     @Autowired
     private UniversityService universityService;
+    @Autowired
+    private ScheduleRepository scheduleRepository;
 
     public List<Chrono> findAll() {
         return chronoRepository.findAll();
@@ -42,7 +46,9 @@ public class ChronoService implements IChronoService{
         return chronoRepository.save(chrono);
     }
 
+    @Transactional
     public void deleteChrono(Long id) {
+        scheduleRepository.deleteScheduleByIdChrono(chronoRepository.findByChronoId(id));
         chronoRepository.deleteById(id);
     }
 

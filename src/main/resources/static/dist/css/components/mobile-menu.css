@@ -86,3 +86,14 @@
     color: #fff;
     font-weight: 500; 
 }
+
+.menu--disabled {
+    color: #d1d5db;
+    cursor: not-allowed;
+}
+.menu--disabled .menu__icon i {
+    color: #9ca3af;
+}
+.menu--disabled:hover {
+    color: #d1d5db;
+}

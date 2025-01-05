@@ -7,15 +7,16 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Setter
 @Getter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
+@ToString(callSuper = true)
 public class Teacher extends User implements Serializable {
     @NonNull
     @Enumerated(EnumType.STRING)
@@ -41,4 +42,8 @@ public class Teacher extends User implements Serializable {
     @JsonManagedReference(value = "constraint-teachers")
     private TeacherConstraint constraint;
 
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "teacher-schedules")
+    @ToString.Exclude
+    private List<Schedule> schedules;
 }

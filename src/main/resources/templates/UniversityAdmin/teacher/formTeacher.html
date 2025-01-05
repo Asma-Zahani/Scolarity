@@ -128,21 +128,6 @@
                                             </div>
                                         </div>
                                     </div>
-<!--                                    <div data-tw-merge="" forminline="formInline" class="block sm:flex group form-inline mt-5 flex-col items-start pt-5 first:mt-0 first:pt-0 xl:flex-row">-->
-<!--                                        <label data-tw-merge="" class="inline-block mb-2 group-[.form-inline]:mb-2 group-[.form-inline]:sm:mb-0 group-[.form-inline]:sm:mr-5 group-[.form-inline]:sm:text-right xl:!mr-10 xl:w-64">-->
-<!--                                            <div class="text-left">-->
-<!--                                                <div class="flex items-center">-->
-<!--                                                    <div class="font-medium">University</div>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                        </label>-->
-<!--                                        <div class="mt-3 w-full flex-1 xl:mt-0">-->
-<!--                                            <select data-tw-merge="" th:field="*{university}" class="disabled:bg-slate-100 disabled:cursor-not-allowed disabled:dark:bg-darkmode-800/50 [&[readonly]]:bg-slate-100 [&[readonly]]:cursor-not-allowed [&[readonly]]:dark:bg-darkmode-800/50 transition duration-200 ease-in-out w-full text-sm border-slate-200 shadow-sm rounded-md py-2 px-3 pr-8 focus:ring-4 focus:ring-primary focus:ring-opacity-20 focus:border-primary focus:border-opacity-40 dark:bg-darkmode-800 dark:border-transparent dark:focus:ring-slate-700 dark:focus:ring-opacity-50 group-[.form-inline]:flex-1">-->
-<!--                                                <option value="" selected>choose an University</option>-->
-<!--                                                <option th:each="university : ${universities}" th:value="${university.universityId}" th:text="${university.universityName}"></option>-->
-<!--                                            </select>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
                                     <div data-tw-merge="" forminline="formInline" class="block sm:flex group form-inline mt-5 flex-col items-start pt-5 first:mt-0 first:pt-0 xl:flex-row">
                                         <label data-tw-merge="" class="inline-block mb-2 group-[.form-inline]:mb-2 group-[.form-inline]:sm:mb-0 group-[.form-inline]:sm:mr-5 group-[.form-inline]:sm:text-right xl:!mr-10 xl:w-64">
                                             <div class="text-left">
@@ -154,7 +139,8 @@
                                         <div class="mt-3 w-full flex-1 xl:mt-0">
                                             <div class="preview relative [&.hide]:overflow-hidden [&.hide]:h-0">
                                                 <select data-placeholder="Select subject(s)" name="subjectIds" multiple="multiple" class="tom-select w-full">
-                                                    <option th:each="subject : ${subjects}" th:value="${subject.subjectId}" th:text="${subject.subjectName}"></option>
+                                                    <option th:each="subject : ${subjects}" th:value="${subject.subjectId}" th:text="${subject.subjectName}"
+                                                            th:selected="${teacher.subjects != null && teacher.subjects.contains(subject)}"></option>
                                                 </select>
                                             </div>
                                         </div>

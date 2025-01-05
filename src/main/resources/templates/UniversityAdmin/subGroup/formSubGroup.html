@@ -116,7 +116,8 @@
                                         <div class="mt-3 w-full flex-1 xl:mt-0">
                                             <div class="preview relative [&.hide]:overflow-hidden [&.hide]:h-0">
                                                 <select data-placeholder="Select student(s)" name="studentIds" multiple="multiple" class="tom-select w-full">
-                                                    <option th:each="student : ${students}" th:value="${student.id}" th:text="${student.lastName + ' ' + student.firstName}"></option>
+                                                    <option th:each="student : ${students}" th:value="${student.id}" th:text="${student.lastName + ' ' + student.firstName}"
+                                                            th:selected="${subGroup.students != null && subGroup.students.contains(student)}"></option>
                                                 </select>
                                             </div>
                                         </div>

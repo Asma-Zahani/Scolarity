@@ -1,7 +1,6 @@
 package security.securityscolarity.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +14,7 @@ import security.securityscolarity.service.IMPL.UserService;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Controller
@@ -71,7 +71,6 @@ public class TeacherController {
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
             teacher.setUniversity(universityAdmin.getUniversity());
-            teacherService.addTeacher(teacher);
             if (subjectIds != null && !subjectIds.isEmpty()) {
                 Set<Subject> subjects = new HashSet<>();
                 for (Long id : subjectIds) {
@@ -80,10 +79,9 @@ public class TeacherController {
                         subjects.add(subject);
                     }
                 }
-                if (!subjects.isEmpty()) {
-                    teacherService.assignSubjectsToTeacher(subjects, teacher);
-                }
+                teacher.setSubjects(subjects);
             }
+            teacherService.addTeacher(teacher);
         }
 
         redirectAttributes.addFlashAttribute("successMessage", "Teacher added");
@@ -93,7 +91,7 @@ public class TeacherController {
     @GetMapping("/delete")
     public String delete(@RequestParam("teacherId") Long id) {
         teacherService.deleteTeacher(id);
-        return "redirect:/teacher/all";
+        return "redirect:/teachers";
     }
 
     @GetMapping("/assignSubjects")
@@ -139,7 +137,7 @@ public class TeacherController {
             }
         }
         redirectAttributes.addFlashAttribute("successMessage", "Teachers successfully assigned to subjects.");
-        return "redirect:/teachers/all";
+        return "redirect:/teachers";
     }
 
     @GetMapping("/update")
@@ -157,7 +155,6 @@ public class TeacherController {
     @PostMapping("/updateTeacher")
     public String updateTeacher(@ModelAttribute Teacher teacher,
                            @RequestParam(name = "subjectIds", required = false) List<Long> subjectIds) {
-        teacherService.updateTeacher(teacher.getId(),teacher);
         if (subjectIds != null && !subjectIds.isEmpty()) {
             Set<Subject> subjects = new HashSet<>();
             for (Long id : subjectIds) {
@@ -166,10 +163,12 @@ public class TeacherController {
                     subjects.add(subject);
                 }
             }
-            if (!subjects.isEmpty()) {
-                teacherService.assignSubjectsToTeacher(subjects, teacher);
-            }
+            teacher.setSubjects(subjects);
         }
-        return "redirect:/teachers/all";
+        if(Objects.equals(teacher.getPassword(), "")){
+            teacher.setPassword(null);
+        }
+        teacherService.updateTeacher(teacher.getId(),teacher);
+        return "redirect:/teachers";
     }
 }

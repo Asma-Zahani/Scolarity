@@ -7,7 +7,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -60,4 +62,9 @@ public class Group implements Serializable {
     @JsonIgnore
     @ToString.Exclude
     private University university;
+
+    @OneToMany(mappedBy = "id.group", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @JsonManagedReference(value = "group-schedules")
+    private List<Schedule> schedules = new ArrayList<>();
 }

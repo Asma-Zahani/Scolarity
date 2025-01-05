@@ -24,14 +24,6 @@ public class ScheduleService {
     @Autowired
     private TeacherService teacherService;
 
-    public List<Schedule> getScheduleForTeacher(Teacher teacher) {
-        return scheduleRepository.findScheduleByTeacher(teacher);
-    }
-
-    public List<Schedule> getScheduleForGroup(Group group) {
-        return scheduleRepository.findScheduleByIdGroup(group);
-    }
-
     public List<Schedule> testGenerateSchedule(University university) {
         List<Schedule> schedules = new ArrayList<>();
 
@@ -45,7 +37,7 @@ public class ScheduleService {
             return null;
         }
 
-        List<Schedule> existingSchedules = getScheduleForTeacher(teachers.getFirst());
+        List<Schedule> existingSchedules = scheduleRepository.findScheduleByTeacher(teachers.getFirst());
         if (!existingSchedules.isEmpty()) {
             System.out.println("La base de données contient déjà des horaires pour cette université.");
             return schedules;

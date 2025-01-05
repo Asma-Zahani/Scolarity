@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,6 +32,8 @@ public class RoleTeacherController {
     private ChronoService chronoService;
     @Autowired
     private DayService dayService;
+    @Autowired
+    private GroupService groupService;
 
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String teacherIndex(Model model, HttpServletRequest request) {
@@ -46,7 +49,7 @@ public class RoleTeacherController {
             if (teacher.getSubjects() != null) {
                 subjectCount = subjectService.getSubjectCountByTeacher(teacher.getId());
                 allSubjects = subjectService.findByTeacher(teacher).size() > 5 ? subjectService.findByTeacher(teacher).subList(0, 5) : subjectService.findByTeacher(teacher);
-                listSchedules = scheduleService.getScheduleForTeacher(teacher);
+                listSchedules = teacher.getSchedules();
                 distinctGroups = listSchedules.stream()
                         .map(schedule -> schedule.getId().getGroup()).distinct().toList();
                 distinctGroupCount = (int) listSchedules.stream()
@@ -73,7 +76,7 @@ public class RoleTeacherController {
         int subjectCount = 0;
         if (user instanceof Teacher teacher) {
             subjectCount = subjectService.getSubjectCountByTeacher(teacher.getId());
-            List<Schedule> schedules = scheduleService.getScheduleForTeacher(teacher);
+            List<Schedule> schedules = teacher.getSchedules();
             Map<String, Map<String, Schedule>> scheduleMap = new HashMap<>();
 
             for (Schedule schedule : schedules) {
@@ -107,7 +110,7 @@ public class RoleTeacherController {
                 List<Subject> allSubjects = subjectService.findByTeacher(teacher);
                 List<Subject> limitedSubjects = allSubjects.size() > 5 ? allSubjects.subList(0, 5) : allSubjects;
                 model.addAttribute("listSubjects", limitedSubjects);
-                listSchedules = scheduleService.getScheduleForTeacher(teacher);
+                listSchedules = teacher.getSchedules();
             }
         }
         model.addAttribute("students", studentCount);
@@ -130,7 +133,7 @@ public class RoleTeacherController {
                 List<Subject> allSubjects = subjectService.findByTeacher(teacher);
                 List<Subject> limitedSubjects = allSubjects.size() > 5 ? allSubjects.subList(0, 5) : allSubjects;
                 model.addAttribute("listSubjects", limitedSubjects);
-                listSchedules = scheduleService.getScheduleForTeacher(teacher);
+                listSchedules = teacher.getSchedules();
             }
         }
         String currentUrl = request.getRequestURI();
@@ -141,7 +144,7 @@ public class RoleTeacherController {
         return "Teacher/subjects";
     }
 
-    @RequestMapping(value = "/selectGroup")
+    @RequestMapping(value = {"/selectGroup", "/schedule/selectGroup"}, method = RequestMethod.GET)
     public String Students(Model model, HttpServletRequest request) {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
@@ -151,7 +154,7 @@ public class RoleTeacherController {
         if (user instanceof Teacher teacher) {
             if (teacher.getSubjects() != null) {
                 subjectCount = subjectService.getSubjectCountByTeacher(teacher.getId());
-                listSchedules = scheduleService.getScheduleForTeacher(teacher);
+                listSchedules = teacher.getSchedules();
                 distinctGroups = listSchedules.stream()
                         .map(schedule -> schedule.getId().getGroup()).distinct().toList();
             }
@@ -163,6 +166,49 @@ public class RoleTeacherController {
         return "Teacher/selectGroup";
     }
 
+
+    @PostMapping("/schedule/findScheduleByGroup")
+    public String findScheduleByGroup(Model model, @RequestParam(name = "groupId") Long groupId, HttpServletRequest request) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        int subjectCount = 0;
+        if (user instanceof Teacher teacher) {
+            subjectCount = subjectService.getSubjectCountByTeacher(teacher.getId());
+            List<Schedule> schedules = groupService.findByGroupID(groupId).getSchedules();
+            Map<String, Map<String, Map<String, List<Schedule>>>> scheduleMap = new HashMap<>();
+            boolean toggleGroup = true;
+
+            for (Schedule schedule : schedules) {
+                String chronoName = schedule.getId().getChrono().getChronoName();
+                String dayName = schedule.getId().getDay().getDayName();
+
+                scheduleMap.putIfAbsent(chronoName, new HashMap<>());
+                scheduleMap.get(chronoName).putIfAbsent(dayName, new HashMap<>());
+
+                String groupSession;
+                if ("CI".equals(schedule.getId().getSubject().getSession())) {
+                    groupSession = "T";
+                } else if ("TP".equals(schedule.getId().getSubject().getSession())) {
+                    groupSession = toggleGroup ? "Gp1" : "Gp2";
+                    toggleGroup = !toggleGroup;
+                } else {
+                    groupSession = "";
+                }
+
+                scheduleMap.get(chronoName).get(dayName).putIfAbsent(groupSession, new ArrayList<>());
+                scheduleMap.get(chronoName).get(dayName).get(groupSession).add(schedule);
+            }
+
+            model.addAttribute("schedules", scheduleMap);
+            model.addAttribute("subjects", subjectCount);
+            model.addAttribute("group",groupService.findByGroupID(groupId));
+            model.addAttribute("chronos", chronoService.findByUniversity(teacher.getUniversity()));
+            model.addAttribute("days", dayService.findAll().stream().sorted(Comparator.comparingInt(Day::getDayNumber)).toList());
+        }
+        model.addAttribute("currentUrl", request.getRequestURI());
+        return "Teacher/scheduleForGroup";
+    }
+
     @RequestMapping(value = "/students")
     public String SelectGroup(@RequestParam("groupId") Long groupId, Model model, HttpServletRequest request) {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -172,7 +218,7 @@ public class RoleTeacherController {
         List<Student> students = new ArrayList<>();
         if (user instanceof Teacher teacher) {
             subjectCount = subjectService.getSubjectCountByTeacher(teacher.getId());
-            listSchedules = scheduleService.getScheduleForTeacher(teacher);
+            listSchedules = teacher.getSchedules();
             students = studentService.findStudentsByGroup(groupId);
         }
         model.addAttribute("students", students);

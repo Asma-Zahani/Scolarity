@@ -79,13 +79,58 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- END: General Report -->
+                        <div class="col-span-12 mt-6 xl:col-span-4">
+                            <div class="intro-y flex h-10 items-center">
+                                <h2 class="mr-5 truncate text-lg font-medium">
+                                    Teachers
+                                </h2>
+                            </div>
+                            <div th:if="${limitedTeachers != null and !limitedTeachers.isEmpty()}" class="mt-5">
+                                <div th:each="teacher : ${limitedTeachers}" class="intro-y">
+                                    <div class="box zoom-in mb-3 flex items-center px-4 py-4">
+                                        <div class="image-fit h-10 w-10 flex-none overflow-hidden rounded-md">
+                                            <img th:src="@{/dist/images/universityAdmin/teacher.png}">
+                                        </div>
+                                        <div class="ml-4 mr-auto">
+                                            <div class="font-medium"><span th:text="*{teacher.lastName + ' ' + teacher.firstName }"></span></div>
+                                        </div>
+                                        <a class="mr-3 flex items-center text-primary" th:href="@{/teachers/detail(teacherId=${teacher.id})}">
+                                            <i data-tw-merge="" data-lucide="eye" class="stroke-1.5 mr-1 h-4 w-4"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <a th:href="@{/teachers}" class="intro-y block w-full rounded-md border border-dotted border-slate-400 py-4 text-center text-slate-500 dark:border-darkmode-300" href="#">
+                                    View More
+                                </a>
+                            </div>
+                            <div th:if="${limitedTeachers == null or limitedTeachers.size() == 0}" class="mt-5">
+                                <div role="alert" class="alert relative border rounded-md px-5 py-4 bg-primary border-primary text-white dark:border-primary pl-5 pr-16 intro-y box col-span-11 mb-6 dark:border-darkmode-600">
+                                    <div class="flex items-center">
+                                        <span>
+                                            <i data-tw-merge="" data-lucide="info" class="stroke-1.5 mr-2 h-4 w-4"></i>
+                                        </span>
+                                        <span>
+                                            No Teacher found. Please add a Teacher to proceed.
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END: Weekly Best Sellers -->
+                        <div class="col-span-12 xl:col-span-8 2xl:col-span-9">
+                            <div class="box p-5">
+                                <div data-tw-merge="" class="full-calendar">
+                                    <div></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <div th:replace="~{fragments/scripts :: scripts}"></div>
 </body>
 </html>

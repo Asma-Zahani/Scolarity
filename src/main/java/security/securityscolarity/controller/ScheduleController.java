@@ -40,7 +40,7 @@ public class ScheduleController {
         if (user instanceof UniversityAdmin universityAdmin) {
             model.addAttribute("schedules",scheduleService.testGenerateSchedule(universityAdmin.getUniversity()));
         }
-        model.addAttribute("currentUrl", "schedule_list");
+        model.addAttribute("currentUrl", "schedule_list_");
         return "UniversityAdmin/schedule/allSchedule";
     }
 
@@ -83,7 +83,7 @@ public class ScheduleController {
     @PostMapping("/findScheduleByTeacher")
     public String findScheduleByTeacher(Model model, @RequestParam(name = "teacherId") Long teacherId) {
         Teacher teacher = teacherService.findByTeacherID(teacherId);
-        List<Schedule> schedules = scheduleService.getScheduleForTeacher(teacher);
+        List<Schedule> schedules = teacher.getSchedules();
         Map<String, Map<String, Schedule>> scheduleMap = new HashMap<>();
 
         for (Schedule schedule : schedules) {
@@ -116,7 +116,7 @@ public class ScheduleController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
-            List<Schedule> schedules = scheduleService.getScheduleForGroup(groupService.findByGroupID(groupId));
+            List<Schedule> schedules = groupService.findByGroupID(groupId).getSchedules();
             Map<String, Map<String, Map<String, List<Schedule>>>> scheduleMap = new HashMap<>();
             boolean toggleGroup = true;
 

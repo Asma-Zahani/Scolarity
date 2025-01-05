@@ -13,6 +13,9 @@ import java.util.List;
 public interface StudentRepository extends JpaRepository<Student, Long> {
     List<Student> findByUniversity(University university);
     List<Student> findBySubGroup_Group_GroupId(Long groupId);
+    List<Student> findBySubGroup_Group_GroupIdAndIdNot(Long groupId, Long userId);
     int countBySubGroup_Group_GroupId(Long groupId);
     long countByUniversity(University university);
+
+    int countBySubGroup_Group_GroupIdAndIdNot(Long groupId, Long id);
 }

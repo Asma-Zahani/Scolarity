@@ -6,7 +6,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -46,4 +48,9 @@ public class Subject implements Serializable {
     @JsonIgnore
     @ToString.Exclude
     private University university;
+
+    @OneToMany(mappedBy = "id.subject", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @JsonIgnore
+    private List<Schedule> schedules = new ArrayList<>();
 }

@@ -85,6 +85,44 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div th:if="*{teachers != null && !teachers.isEmpty()}" data-tw-merge="" forminline="formInline" class="block sm:flex group form-inline mt-5 flex-col items-start pt-5 first:mt-0 first:pt-0 xl:flex-row">
+                                        <label data-tw-merge="" class="inline-block mb-2 group-[.form-inline]:mb-2 group-[.form-inline]:sm:mb-0 group-[.form-inline]:sm:mr-5 group-[.form-inline]:sm:text-right xl:!mr-10 xl:w-64">
+                                            <div class="text-left">
+                                                <div class="flex items-center">
+                                                    <div class="font-medium">Teachers</div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                        <div class="mt-3 w-full flex-1 xl:mt-0">
+                                            <span>
+                                                <div class="disabled:bg-slate-100 disabled:cursor-not-allowed dark:disabled:bg-darkmode-800/50 dark:disabled:border-transparent transition duration-200 ease-in-out text-sm border-slate-200 shadow-sm rounded-md placeholder:text-slate-400/90 focus:ring-4 focus:ring-primary focus:ring-opacity-20 focus:border-primary focus:border-opacity-40 dark:bg-darkmode-800 dark:border-transparent dark:focus:ring-slate-700 dark:focus:ring-opacity-50 dark:placeholder:text-slate-500/80 group-[.form-inline]:flex-1 group-[.input-group]:rounded-none group-[.input-group]:[&:not(:first-child)]:border-l-transparent group-[.input-group]:first:rounded-l group-[.input-group]:last:rounded-r group-[.input-group]:z-10">
+                                                    <span th:each="teacher, iterStat : *{teachers}">
+                                                        <a th:href="@{/teachers/detail(teacherId=${teacher.id})}"
+                                                           th:text="${teacher.lastName + ' ' + teacher.firstName + (iterStat.last ? '' : ', ')}"></a>
+                                                    </span>
+                                                </div>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div th:if="*{groups != null && !groups.isEmpty()}" data-tw-merge="" forminline="formInline" class="block sm:flex group form-inline mt-5 flex-col items-start pt-5 first:mt-0 first:pt-0 xl:flex-row">
+                                        <label data-tw-merge="" class="inline-block mb-2 group-[.form-inline]:mb-2 group-[.form-inline]:sm:mb-0 group-[.form-inline]:sm:mr-5 group-[.form-inline]:sm:text-right xl:!mr-10 xl:w-64">
+                                            <div class="text-left">
+                                                <div class="flex items-center">
+                                                    <div class="font-medium">Groups</div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                        <div class="mt-3 w-full flex-1 xl:mt-0">
+                                            <span>
+                                                <div class="disabled:bg-slate-100 disabled:cursor-not-allowed dark:disabled:bg-darkmode-800/50 dark:disabled:border-transparent transition duration-200 ease-in-out text-sm border-slate-200 shadow-sm rounded-md placeholder:text-slate-400/90 focus:ring-4 focus:ring-primary focus:ring-opacity-20 focus:border-primary focus:border-opacity-40 dark:bg-darkmode-800 dark:border-transparent dark:focus:ring-slate-700 dark:focus:ring-opacity-50 dark:placeholder:text-slate-500/80 group-[.form-inline]:flex-1 group-[.input-group]:rounded-none group-[.input-group]:[&:not(:first-child)]:border-l-transparent group-[.input-group]:first:rounded-l group-[.input-group]:last:rounded-r group-[.input-group]:z-10">
+                                                    <span th:each="group, iterStat : *{groups}">
+                                                        <a th:href="@{/group/detail(groupId=${group.groupId})}"
+                                                           th:text="${group.groupName + (iterStat.last ? '' : ', ')}"></a>
+                                                    </span>
+                                                </div>
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

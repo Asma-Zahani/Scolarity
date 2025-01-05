@@ -24,8 +24,6 @@ public class RoleStudentController {
     @Autowired
     private SubjectService subjectService;
     @Autowired
-    private ScheduleService scheduleService;
-    @Autowired
     private ChronoService chronoService;
     @Autowired
     private DayService dayService;
@@ -41,11 +39,11 @@ public class RoleStudentController {
             model.addAttribute("student", student);
             if (student.getSubGroup() != null) {
                 subjectCount = subjectService.getSubjectCountByGroup(student.getSubGroup().getGroup().getGroupId());
-                studentCount = studentService.countStudentsByGroup(student.getSubGroup().getGroup().getGroupId());
+                studentCount = studentService.countStudentsByGroupExcludingCurrentUser(student.getSubGroup().getGroup().getGroupId(), user.getId());
                 List<Subject> allSubjects = subjectService.findByGroup(student.getSubGroup().getGroup());
                 List<Subject> limitedSubjects = allSubjects.size() > 5 ? allSubjects.subList(0, 5) : allSubjects;
                 model.addAttribute("listSubjects", limitedSubjects);
-                listSchedules = scheduleService.getScheduleForGroup(student.getSubGroup().getGroup());
+                listSchedules = student.getSubGroup().getGroup().getSchedules();
             }
         }
         String currentUrl = request.getRequestURI();
@@ -64,9 +62,9 @@ public class RoleStudentController {
         int studentCount = 0;
         if (user instanceof Student student) {
             subjectCount = subjectService.getSubjectCountByGroup(student.getSubGroup().getGroup().getGroupId());
-            studentCount = studentService.countStudentsByGroup(student.getSubGroup().getGroup().getGroupId());
+            studentCount = studentService.countStudentsByGroupExcludingCurrentUser(student.getSubGroup().getGroup().getGroupId(), user.getId());
 
-            List<Schedule> schedules = scheduleService.getScheduleForGroup(student.getSubGroup().getGroup());
+            List<Schedule> schedules = student.getSubGroup().getGroup().getSchedules();
             Map<String, Map<String, Map<String, List<Schedule>>>> scheduleMap = new HashMap<>();
             boolean toggleGroup = true;
 
@@ -92,7 +90,7 @@ public class RoleStudentController {
             }
 
             model.addAttribute("student",student);
-            model.addAttribute("scheduleMap", scheduleMap);
+            model.addAttribute("schedules", scheduleMap);
             model.addAttribute("chronos", chronoService.findByUniversity(student.getUniversity()));
             model.addAttribute("days", dayService.findAll().stream().sorted(Comparator.comparingInt(Day::getDayNumber)).toList());
 
@@ -117,8 +115,8 @@ public class RoleStudentController {
             model.addAttribute("student", student);
             if (student.getSubGroup() != null) {
                 subjectCount = subjectService.getSubjectCountByGroup(student.getSubGroup().getGroup().getGroupId());
-                studentCount = studentService.countStudentsByGroup(student.getSubGroup().getGroup().getGroupId());
-                listSchedules = scheduleService.getScheduleForGroup(student.getSubGroup().getGroup());
+                studentCount = studentService.countStudentsByGroupExcludingCurrentUser(student.getSubGroup().getGroup().getGroupId(), user.getId());
+                listSchedules = student.getSubGroup().getGroup().getSchedules();
             }
         }
         model.addAttribute("students", studentCount);
@@ -139,9 +137,9 @@ public class RoleStudentController {
             model.addAttribute("student", student);
             if (student.getSubGroup() != null) {
                 subjectCount = subjectService.getSubjectCountByGroup(student.getSubGroup().getGroup().getGroupId());
-                studentCount = studentService.countStudentsByGroup(student.getSubGroup().getGroup().getGroupId());
+                studentCount = studentService.countStudentsByGroupExcludingCurrentUser(student.getSubGroup().getGroup().getGroupId(), user.getId());
                 model.addAttribute("listSubjects", subjectService.findByGroup(student.getSubGroup().getGroup()));
-                listSchedules = scheduleService.getScheduleForGroup(student.getSubGroup().getGroup());
+                listSchedules = student.getSubGroup().getGroup().getSchedules();
             }
         }
         String currentUrl = request.getRequestURI();
@@ -164,9 +162,9 @@ public class RoleStudentController {
             model.addAttribute("student", student);
             if (student.getSubGroup() != null) {
                 subjectCount = subjectService.getSubjectCountByGroup(student.getSubGroup().getGroup().getGroupId());
-                studentCount = studentService.countStudentsByGroup(student.getSubGroup().getGroup().getGroupId());
-                studentsInSameGroup = studentService.findStudentsByGroup(student.getSubGroup().getGroup().getGroupId());
-                listSchedules = scheduleService.getScheduleForGroup(student.getSubGroup().getGroup());
+                studentCount = studentService.countStudentsByGroupExcludingCurrentUser(student.getSubGroup().getGroup().getGroupId(), user.getId());
+                studentsInSameGroup = studentService.findStudentsByGroupExcludingCurrentUser(student.getSubGroup().getGroup().getGroupId(), user.getId());
+                listSchedules = student.getSubGroup().getGroup().getSchedules();
             }
         }
         String currentUrl = request.getRequestURI();

@@ -35,17 +35,6 @@ public class UserService implements IUserService{
         userRepository.deleteById(id);
     }
 
-    public User updateUser(Long id , User user) {
-        User userToUpdate = userRepository.findById(id).get();
-        userToUpdate.setId(id);
-        userToUpdate.setFirstName(user.getFirstName());
-        userToUpdate.setLastName(user.getLastName());
-        userToUpdate.setEmail(user.getEmail());
-        userToUpdate.setPassword(user.getPassword());
-        userToUpdate.setActive(user.isActive());
-        return userRepository.save(userToUpdate);
-    }
-
     public boolean existsUserWithRole(String role) {
         String sqlQuery = "SELECT COUNT(*) FROM `user_roles` WHERE roles = ?";
         Query query = entityManager.createNativeQuery(sqlQuery);

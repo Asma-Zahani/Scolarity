@@ -2,10 +2,7 @@ package security.securityscolarity.service.IMPL;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import security.securityscolarity.entity.Room;
-import security.securityscolarity.entity.Student;
-import security.securityscolarity.entity.SubGroup;
-import security.securityscolarity.entity.University;
+import security.securityscolarity.entity.*;
 import security.securityscolarity.repository.SubGroupRepository;
 import security.securityscolarity.service.ISubGroupService;
 
@@ -55,5 +52,13 @@ public class SubGroupService implements ISubGroupService{
         subGroupToUpdate.setLearnersCount(subGroup.getLearnersCount());
         subGroupToUpdate.setGroup(subGroup.getGroup());
         return subGroupRepository.save(subGroupToUpdate);
+    }
+
+    public void clearStudents(Long subGroupId) {
+        SubGroup subGroup = subGroupRepository.findBySubGroupId(subGroupId);
+
+        subGroup.getStudents().forEach(student -> student.setSubGroup(null));
+
+        subGroupRepository.save(subGroup);
     }
 }

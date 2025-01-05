@@ -24,9 +24,17 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/" th:class="${currentUrl == '/student/schedule'} ? 'menu menu--active' : 'menu'">
+                    <div th:if="${schedules.isEmpty()}" class="menu menu--disabled">
                         <div class="menu__icon">
-                            <i data-tw-merge="" data-lucide="calendar" class="stroke-1.5 w-5 h-5"></i>
+                            <i data-tw-merge="" data-lucide="calendar-x" class="stroke-1.5 w-5 h-5"></i>
+                        </div>
+                        <div class="menu__title">
+                            Schedule
+                        </div>
+                    </div>
+                    <a th:if="${!schedules.isEmpty()}" th:href="@{/student/schedule}" th:class="${currentUrl == '/student/schedule'} ? 'menu menu--active' : 'menu'">
+                        <div class="menu__icon">
+                            <i data-tw-merge="" data-lucide="calendar-check" class="stroke-1.5 w-5 h-5"></i>
                         </div>
                         <div class="menu__title">
                             Schedule
@@ -34,12 +42,48 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/" th:class="${currentUrl == '/student/teachers'} ? 'menu menu--active' : 'menu'">
+                    <a th:href="@{/student/teachers}" th:class="${currentUrl == '/student/teachers'} ? 'menu menu--active' : 'menu'">
                         <div class="menu__icon">
                             <i data-tw-merge="" data-lucide="users" class="stroke-1.5 w-5 h-5"></i>
                         </div>
                         <div class="menu__title">
                             Teachers
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <div th:if="${subjects <= 0}" class="menu menu--disabled">
+                        <div class="menu__icon">
+                            <i data-tw-merge="" data-lucide="book-x" class="stroke-1.5 w-5 h-5"></i>
+                        </div>
+                        <div class="menu__title">
+                            Subjects
+                        </div>
+                    </div>
+                    <a th:if="${subjects > 0}" th:href="@{/student/subjects}" th:class="${currentUrl == '/student/subjects'} ? 'menu menu--active' : 'menu'">
+                        <div class="menu__icon">
+                            <i data-tw-merge="" data-lucide="book" class="stroke-1.5 w-5 h-5"></i>
+                        </div>
+                        <div class="menu__title">
+                            Subjects
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <div th:if="${students <= 0}" class="menu menu--disabled">
+                        <div class="menu__icon">
+                            <i data-tw-merge="" data-lucide="user-x" class="stroke-1.5 w-5 h-5"></i>
+                        </div>
+                        <div class="menu__title">
+                            Classmates
+                        </div>
+                    </div>
+                    <a th:if="${students > 0}" th:href="@{/student/classmates}" th:class="${currentUrl == '/student/classmates'} ? 'menu menu--active' : 'menu'">
+                        <div class="menu__icon">
+                            <i data-tw-merge="" data-lucide="users" class="stroke-1.5 w-5 h-5"></i>
+                        </div>
+                        <div class="menu__title">
+                            Classmates
                         </div>
                     </a>
                 </li>

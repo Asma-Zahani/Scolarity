@@ -1,8 +1,5 @@
 package security.securityscolarity.service.IMPL;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,9 +13,6 @@ import java.util.List;
 
 @Service
 public class UniversityAdminService implements IUniversityAdminService {
-
-    @PersistenceContext
-    private EntityManager entityManager;
 
     @Autowired
     UniversityAdminRepository universityAdminRepository;
@@ -46,7 +40,9 @@ public class UniversityAdminService implements IUniversityAdminService {
         universityAdminToUpdate.setFirstName(universityAdmin.getFirstName());
         universityAdminToUpdate.setLastName(universityAdmin.getLastName());
         universityAdminToUpdate.setEmail(universityAdmin.getEmail());
-        universityAdminToUpdate.setPassword(universityAdmin.getPassword());
+        if (universityAdmin.getPassword() != null && !universityAdmin.getPassword().isEmpty()) {
+            universityAdminToUpdate.setPassword(new BCryptPasswordEncoder().encode(universityAdmin.getPassword()));
+        }
         universityAdminToUpdate.setActive(universityAdmin.isActive());
         universityAdminToUpdate.setUniversity(universityAdmin.getUniversity());
         return universityAdminRepository.save(universityAdminToUpdate);

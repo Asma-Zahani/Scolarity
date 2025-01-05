@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import security.securityscolarity.entity.*;
 import security.securityscolarity.repository.BuildingRepository;
 import security.securityscolarity.repository.RoomRepository;
+import security.securityscolarity.repository.ScheduleRepository;
 import security.securityscolarity.service.IRoomService;
 
 import java.util.List;
@@ -22,10 +23,8 @@ public class RoomService implements IRoomService{
     BuildingRepository buildingRepository;
     @Autowired
     private UniversityService universityService;
-
-    public long getRoomCount() {
-        return roomRepository.count();
-    }
+    @Autowired
+    private ScheduleRepository scheduleRepository;
 
     public long countByUniversity(University university) {
         return roomRepository.countByBuildingUniversity(university);
@@ -51,6 +50,10 @@ public class RoomService implements IRoomService{
         return roomRepository.save(Room);
     }
     public void deleteRoom(Long id) {
+        Room room = roomRepository.findByRoomId(id);
+        if (room.getSchedules() != null) {
+            scheduleRepository.deleteAll(room.getSchedules());
+        }
         roomRepository.deleteById(id);
     }
 
@@ -60,6 +63,7 @@ public class RoomService implements IRoomService{
         roomToUpdate.setRoomDescription(room.getRoomDescription());
         roomToUpdate.setCapacity(room.getCapacity());
         roomToUpdate.setBuilding(room.getBuilding());
+        roomToUpdate.setSessionType(room.getSessionType());
         return roomRepository.save(roomToUpdate);
     }
 
