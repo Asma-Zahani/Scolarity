@@ -1,0 +1,99 @@
+package security.securityscolarity.service.IMPL;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+import security.securityscolarity.entity.Role;
+import security.securityscolarity.entity.Subject;
+import security.securityscolarity.entity.Teacher;
+import security.securityscolarity.entity.University;
+import security.securityscolarity.repository.SubjectRepository;
+import security.securityscolarity.repository.TeacherRepository;
+import security.securityscolarity.service.ITeacherService;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+@Service
+public class TeacherService implements ITeacherService{
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Autowired
+    TeacherRepository teacherRepository;
+    @Autowired
+    private SubjectRepository subjectRepository;
+    @Autowired
+    private UniversityService universityService;
+
+    public long getTeacherCount() {
+        return teacherRepository.count();
+    }
+
+    public long countByUniversity(University university) {
+        return teacherRepository.countByUniversity(university);
+    }
+
+    public List<Teacher> findAll() {
+        return teacherRepository.findAll();
+    }
+
+    public List<Teacher> findTeacherByUniversity(University university) {
+        return teacherRepository.findByUniversity(university);
+    }
+
+    public List<Teacher> findTeacherByUniversityId(Long id) {
+        return teacherRepository.findByUniversity(universityService.findByUniversityID(id));
+    }
+
+    public Teacher findByTeacherID(Long id) {
+        return teacherRepository.findById(id).get();
+    }
+
+    public Teacher addTeacher(Teacher teacher) {
+        teacher.setRoles(Collections.singletonList(Role.TEACHER));
+        teacher.setPassword(new BCryptPasswordEncoder().encode(teacher.getPassword()));
+        return teacherRepository.save(teacher);
+    }
+
+    public  Teacher addTeacherByUniversity(Teacher teacher, Long universityID) {
+        teacher.setUniversity(universityService.findByUniversityID(universityID));
+        return teacherRepository.save(teacher);
+    }
+
+    public void deleteTeacher(Long id) {
+        teacherRepository.deleteById(id);
+    }
+
+    public Teacher updateTeacher(Long id , Teacher teacher) {
+        Teacher teacherToUpdate = teacherRepository.findById(id).get();
+        teacherToUpdate.setId(id);
+        teacherToUpdate.setFirstName(teacher.getFirstName());
+        teacherToUpdate.setLastName(teacher.getLastName());
+        teacherToUpdate.setEmail(teacher.getEmail());
+        teacherToUpdate.setPassword(new BCryptPasswordEncoder().encode(teacher.getPassword()));
+        teacherToUpdate.setActive(teacher.isActive());
+        teacherToUpdate.setSpecialite(teacher.getSpecialite());
+        return teacherRepository.save(teacherToUpdate);
+    }
+
+    public List<Teacher> getTeacherNotAssigned() {
+        String sqlQuery = "SELECT * FROM `user` WHERE dtype = \"Teacher\" and university_id is null";
+        Query query = entityManager.createNativeQuery(sqlQuery, Teacher.class);
+        return query.getResultList();
+    }
+
+    public void assignSubjectsToTeacher(Set<Subject> subjects, Teacher teacher) {
+        for (Subject subject : subjects) {
+            subject.getTeachers().add(teacher);
+            teacher.getSubjects().add(subject);
+        }
+        teacherRepository.save(teacher);
+        subjectRepository.saveAll(subjects);
+    }
+}

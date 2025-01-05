@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" class="opacity-0" lang="en">
+<head th:replace="~{fragments/html_head :: html_head}"></head>
+<body>
+<div class="rubick px-5 sm:px-8 py-5 before:content-[''] before:bg-gradient-to-b before:from-theme-1 before:to-theme-2 dark:before:from-darkmode-800 dark:before:to-darkmode-800 before:fixed before:inset-0 before:z-[-1]">
+    <div th:replace="~{UniversityAdmin/fragments/mobile_menu :: mobile_menu}"></div>
+    <div class="mt-[4.7rem] flex md:mt-0">
+        <div th:replace="~{UniversityAdmin/fragments/side_menu :: side_menu}"></div>
+        <div class="md:max-w-auto min-h-screen min-w-0 max-w-full flex-1 rounded-[30px] bg-slate-100 px-4 pb-10 before:block before:h-px before:w-full before:content-[''] dark:bg-darkmode-700 md:px-[22px]">
+            <div class="relative z-[51] flex h-[67px] items-center border-b border-slate-200">
+                <nav aria-label="breadcrumb" class="flex -intro-x mr-auto hidden sm:flex">
+                    <ol class="flex items-center text-theme-1 dark:text-slate-300">
+                        <li>
+                            <a th:href="@{/}">Scolarity</a>
+                        </li>
+                        <li class="relative ml-5 pl-0.5 before:content-[''] before:w-[14px] before:h-[14px] before:bg-chevron-black before:transform before:rotate-[-90deg] before:bg-[length:100%] before:-ml-[1.125rem] before:absolute before:my-auto before:inset-y-0 dark:before:bg-chevron-white text-slate-800 cursor-text dark:text-slate-400">
+                            <a th:href="@{/}">Dashboard</a>
+                        </li>
+                    </ol>
+                </nav>
+                <div th:replace="~{fragments/profile_top_bar :: profile_top_bar}"></div>
+            </div>
+            <div class="grid grid-cols-12 gap-6">
+                <div class="col-span-12 2xl:col-span-9">
+                    <table data-tw-merge="" class="w-full text-left">
+                        <thead data-tw-merge="" class="">
+                        <tr data-tw-merge="" class="">
+                            <th data-tw-merge="" class="font-medium px-5 py-3 border-b-2 dark:border-darkmode-300 border-l border-r border-t whitespace-nowrap">
+                            </th>
+                            <th th:each="day : ${days}"
+                                data-tw-merge=""
+                                class="font-medium px-5 py-3 border-b-2 dark:border-darkmode-300 border-l border-r border-t whitespace-nowrap">
+                                <span th:text="${day.dayName}"></span>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="chrono : ${chronos}">
+                            <th data-tw-merge="" class="text-left px-5 py-3 border-b dark:border-darkmode-300 border-l border-r border-t">
+                                <div class="ml-3" th:text="${chrono.chronoName}"></div>
+                                <div class="ml-auto truncate text-xs text-slate-500" th:text="${chrono.startTime}"></div>
+                                <div class="ml-auto truncate text-xs text-slate-500" th:text="${chrono.endTime}"></div>
+                            </th>
+                            <td th:each="day : ${days}" class="px-5 py-3 w-56 border-b dark:border-darkmode-300 border-l border-r border-t"
+                                th:utext="${scheduleMap[chrono.chronoName] != null && scheduleMap[chrono.chronoName][day.dayName] != null ?
+                                       'Group: ' + scheduleMap[chrono.chronoName][day.dayName].id.group.groupName +
+                                       '<br>Sub: ' + scheduleMap[chrono.chronoName][day.dayName].id.subject.subjectName +
+                                       '<br>Session: ' + scheduleMap[chrono.chronoName][day.dayName].id.subject.session +
+                                       '<br>Room: ' + scheduleMap[chrono.chronoName][day.dayName].room.building.buildingName +
+                                        scheduleMap[chrono.chronoName][day.dayName].room.roomName : ''}">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments/scripts :: scripts}"></div>
+</body>
+</html>

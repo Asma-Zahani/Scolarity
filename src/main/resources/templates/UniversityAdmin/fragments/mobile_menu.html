@@ -1,0 +1,609 @@
+<div th:fragment="mobile_menu">
+    <div class="mobile-menu group top-0 inset-x-0 fixed bg-theme-1/90 z-[60] border-b border-white/[0.08] dark:bg-darkmode-800/90 md:hidden before:content-[''] before:w-full before:h-screen before:z-10 before:fixed before:inset-x-0 before:bg-black/90 before:transition-opacity before:duration-200 before:ease-in-out before:invisible before:opacity-0 [&.mobile-menu--active]:before:visible [&.mobile-menu--active]:before:opacity-100">
+        <div class="flex h-[70px] items-center px-3 sm:px-8">
+            <a class="mr-auto flex">
+                <img class="w-6" th:src="@{/dist/images/logo.svg}">
+            </a>
+            <a class="mobile-menu-toggler" >
+                <i data-tw-merge="" data-lucide="bar-chart2" class="stroke-1.5 h-8 w-8 -rotate-90 transform text-white"></i>
+            </a>
+        </div>
+        <div class="scrollable h-screen z-20 top-0 left-0 w-[270px] -ml-[100%] bg-primary transition-all duration-300 ease-in-out dark:bg-darkmode-800 [&[data-simplebar]]:fixed [&_.simplebar-scrollbar]:before:bg-black/50 group-[.mobile-menu--active]:ml-0">
+            <a href="#" class="fixed top-0 right-0 mt-4 mr-4 transition-opacity duration-200 ease-in-out invisible opacity-0 group-[.mobile-menu--active]:visible group-[.mobile-menu--active]:opacity-100">
+                <i data-tw-merge="" data-lucide="x-circle" class="stroke-1.5 mobile-menu-toggler h-8 w-8 -rotate-90 transform text-white"></i>
+            </a>
+            <ul class="py-2">
+                <li>
+                    <a href="/" th:class="${currentUrl == '/universityAdmin/index'} ? 'menu menu--active' : 'menu'">
+                        <div class="menu__icon">
+                            <i data-tw-merge="" data-lucide="home" class="stroke-1.5 w-5 h-5"></i>
+                        </div>
+                        <div class="menu__title">
+                            Dashboard
+                        </div>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="javascript:;" th:class="${currentUrl.startsWith('building') or currentUrl.startsWith('room_')} ? 'menu menu--active' : 'menu'">
+                        <div class="menu__icon">
+                            <i data-tw-merge="" data-lucide="building" class="stroke-1.5 w-5 h-5"></i>
+                        </div>
+                        <div class="menu__title">
+                            Building
+                            <div class="menu__sub-icon transform " th:classappend="${currentUrl.startsWith('building') or currentUrl.startsWith('room_')} ? 'rotate-180' : ''">
+                                <i data-tw-merge="" data-lucide="chevron-down" class="stroke-1.5 w-5 h-5"></i>
+                            </div>
+                        </div>
+                    </a>
+                    <ul th:class="${currentUrl.startsWith('building') or currentUrl.startsWith('room_')} ? 'menu__sub-open' : ''">
+                        <li>
+                            <a th:href="@{/building/add}" th:class="${currentUrl == 'building_add'} ? 'menu menu--active' : 'menu'">
+                                <div class="menu__icon">
+                                    <i data-tw-merge="" data-lucide="plus" class="stroke-1.5 w-5 h-5"></i>
+                                </div>
+                                <div class="menu__title">
+                                    Add Building
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/building}" th:class="${currentUrl == 'building_list'} ? 'menu menu--active' : 'menu'">
+                                <div class="menu__icon">
+                                    <i data-tw-merge="" data-lucide="list" class="stroke-1.5 w-5 h-5"></i>
+                                </div>
+                                <div class="menu__title">
+                                    List Building
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" th:class="${currentUrl.startsWith('room_')} ? 'menu menu--active' : 'menu'">
+                                <div class="menu__icon">
+                                    <i data-tw-merge="" data-lucide="archive" class="stroke-1.5 w-5 h-5"></i>
+                                </div>
+                                <div class="menu__title">
+                                    Rooms
+                                    <div class="menu__sub-icon transform " th:classappend="${currentUrl.startsWith('room_')} ? 'rotate-180' : ''">
+                                        <i data-tw-merge="" data-lucide="chevron-down" class="stroke-1.5 w-5 h-5"></i>
+                                    </div>
+                                </div>
+                            </a>
+                            <ul th:class="${currentUrl.startsWith('room_')} ? 'menu__sub-open' : ''">
+                                <li>
+                                    <a th:href="@{/room/add}" th:class="${currentUrl == 'room_add'} ? 'menu menu--active' : 'menu'">
+                                        <div class="menu__icon">
+                                            <i data-tw-merge="" data-lucide="plus" class="stroke-1.5 w-5 h-5"></i>
+                                        </div>
+                                        <div class="menu__title">Add Room</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a th:href="@{/room}" th:class="${currentUrl == 'room_list'} ? 'menu menu--active' : 'menu'">
+                                        <div class="menu__icon">
+                                            <i data-tw-merge="" data-lucide="list" class="stroke-1.5 w-5 h-5"></i>
+                                        </div>
+                                        <div class="menu__title">List Room</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:;" th:class="${currentUrl.startsWith('chrono') or currentUrl.startsWith('day')} ? 'menu menu--active' : 'menu'">
+                        <div class="menu__icon">
+                            <i data-tw-merge="" data-lucide="hourglass" class="stroke-1.5 w-5 h-5"></i>
+                        </div>
+                        <div class="menu__title">
+                            ChronoDay
+                            <div class="menu__sub-icon transform " th:classappend="${currentUrl.startsWith('chrono') or currentUrl.startsWith('day')} ? 'rotate-180' : ''">
+                                <i data-tw-merge="" data-lucide="chevron-down" class="stroke-1.5 w-5 h-5"></i>
+                            </div>
+                        </div>
+                    </a>
+                    <ul th:class="${currentUrl.startsWith('chrono') or currentUrl.startsWith('day')} ? 'menu__sub-open' : ''">
+                        <li>
+                            <a th:href="@{/chronoDay}" th:class="${currentUrl == 'chronoDay_list'} ? 'menu menu--active' : 'menu'">
+                                <div class="menu__icon">
+                                    <i data-tw-merge="" data-lucide="list" class="stroke-1.5 w-5 h-5"></i>
+                                </div>
+                                <div class="menu__title">
+                                    List ChronoDay
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" th:class="${currentUrl.startsWith('chronoDay_add')} ? 'menu menu--active' : 'menu'">
+                                <div class="menu__icon">
+                                    <i data-tw-merge="" data-lucide="plus-circle" class="stroke-1.5 w-5 h-5"></i>
+                                </div>
+                                <div class="menu__title">
+                                    Add ChronoDays
+                                    <div class="menu__sub-icon transform " th:classappend="${currentUrl.startsWith('chronoDay_add')} ? 'rotate-180' : ''">
+                                        <i data-tw-merge="" data-lucide="chevron-down" class="stroke-1.5 w-5 h-5"></i>
+                                    </div>
+                                </div>
+                            </a>
+                            <ul th:class="${currentUrl.startsWith('chronoDay_add')} ? 'menu__sub-open' : ''">
+                                <li>
+                                    <a th:href="@{/chronoDay/add}" th:class="${currentUrl == 'chronoDay_add'} ? 'menu menu--active' : 'menu'">
+                                        <div class="menu__icon">
+                                            <i data-tw-merge="" data-lucide="plus" class="stroke-1.5 w-5 h-5"></i>
+                                        </div>
+                                        <div class="menu__title">Add ChronoDay</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a th:href="@{/chronoDay/addChronos}" th:class="${currentUrl == 'chronoDay_add_chronos'} ? 'menu menu--active' : 'menu'">
+                                        <div class="menu__icon">
+                                            <i data-tw-merge="" data-lucide="plus" class="stroke-1.5 w-5 h-5"></i>
+                                        </div>
+                                        <div class="menu__title">Add chronos to day</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a th:href="@{/chronoDay/addDays}" th:class="${currentUrl == 'chronoDay_add_days'} ? 'menu menu--active' : 'menu'">
+                                        <div class="menu__icon">
+                                            <i data-tw-merge="" data-lucide="plus" class="stroke-1.5 w-5 h-5"></i>
+                                        </div>
+                                        <div class="menu__title">Add days to chrono</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript:;" th:class="${currentUrl.startsWith('chrono_')} ? 'menu menu--active' : 'menu'">
+                                <div class="menu__icon">
+                                    <i data-tw-merge="" data-lucide="clock" class="stroke-1.5 w-5 h-5"></i>
+                                </div>
+                                <div class="menu__title">
+                                    Chronos
+                                    <div class="menu__sub-icon transform " th:classappend="${currentUrl.startsWith('chrono_')} ? 'rotate-180' : ''">
+                                        <i data-tw-merge="" data-lucide="chevron-down" class="stroke-1.5 w-5 h-5"></i>
+                                    </div>
+                                </div>
+                            </a>
+                            <ul th:class="${currentUrl.startsWith('chrono_')} ? 'menu__sub-open' : ''">
+                                <li>
+                                    <a th:href="@{/chrono/add}" th:class="${currentUrl == 'chrono_add'} ? 'menu menu--active' : 'menu'">
+                                        <div class="menu__icon">
+                                            <i data-tw-merge="" data-lucide="plus" class="stroke-1.5 w-5 h-5"></i>
+                                        </div>
+                                        <div class="menu__title">Add Chrono</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a th:href="@{/chrono}" th:class="${currentUrl == 'chrono_list'} ? 'menu menu--active' : 'menu'">
+                                        <div class="menu__icon">
+                                            <i data-tw-merge="" data-lucide="list" class="stroke-1.5 w-5 h-5"></i>
+                                        </div>
+                                        <div class="menu__title">List Chrono</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript:;" th:class="${currentUrl.startsWith('day_')} ? 'menu menu--active' : 'menu'">
+                                <div class="menu__icon">
+                                    <i data-tw-merge="" data-lucide="calendar" class="stroke-1.5 w-5 h-5"></i>
+                                </div>
+                                <div class="menu__title">
+                                    Days
+                                    <div class="menu__sub-icon transform " th:classappend="${currentUrl.startsWith('day_')} ? 'rotate-180' : ''">
+                                        <i data-tw-merge="" data-lucide="chevron-down" class="stroke-1.5 w-5 h-5"></i>
+                                    </div>
+                                </div>
+                            </a>
+                            <ul th:class="${currentUrl.startsWith('day_')} ? 'menu__sub-open' : ''">
+                                <li>
+                                    <a th:href="@{/day/add}" th:class="${currentUrl == 'day_add'} ? 'menu menu--active' : 'menu'">
+                                        <div class="menu__icon">
+                                            <i data-tw-merge="" data-lucide="plus" class="stroke-1.5 w-5 h-5"></i>
+                                        </div>
+                                        <div class="menu__title">Add Day</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a th:href="@{/day}" th:class="${currentUrl == 'day_list'} ? 'menu menu--active' : 'menu'">
+                                        <div class="menu__icon">
+                                            <i data-tw-merge="" data-lucide="list" class="stroke-1.5 w-5 h-5"></i>
+                                        </div>
+                                        <div class="menu__title">List Day</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:;" th:class="${currentUrl.startsWith('group_') or currentUrl.startsWith('assign_group_') or currentUrl.startsWith('subGroup') or currentUrl.startsWith('assign_subGroup_')} ? 'menu menu--active' : 'menu'">
+                        <div class="menu__icon">
+                            <i data-tw-merge="" data-lucide="users-2" class="stroke-1.5 w-5 h-5"></i>
+                        </div>
+                        <div class="menu__title">
+                            Group
+                            <div class="menu__sub-icon transform " th:classappend="${currentUrl.startsWith('group_') or currentUrl.startsWith('assign_group_') or currentUrl.startsWith('subGroup') or currentUrl.startsWith('assign_subGroup_')} ? 'rotate-180' : ''">
+                                <i data-tw-merge="" data-lucide="chevron-down" class="stroke-1.5 w-5 h-5"></i>
+                            </div>
+                        </div>
+                    </a>
+                    <ul th:class="${currentUrl.startsWith('group_') or currentUrl.startsWith('assign_group_') or currentUrl.startsWith('subGroup') or currentUrl.startsWith('assign_subGroup_')} ? 'menu__sub-open' : ''">
+                        <li>
+                            <a th:href="@{/group/add}" th:class="${currentUrl == 'group_add'} ? 'menu menu--active' : 'menu'">
+                                <div class="menu__icon">
+                                    <i data-tw-merge="" data-lucide="plus" class="stroke-1.5 w-5 h-5"></i>
+                                </div>
+                                <div class="menu__title">
+                                    Add Group
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/group}" th:class="${currentUrl == 'group_list'} ? 'menu menu--active' : 'menu'">
+                                <div class="menu__icon">
+                                    <i data-tw-merge="" data-lucide="list" class="stroke-1.5 w-5 h-5"></i>
+                                </div>
+                                <div class="menu__title">
+                                    List Group
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/group/assignSubjects}" th:class="${currentUrl == 'assign_group_subjects'} ? 'menu menu--active' : 'menu'">
+                                <div class="menu__icon">
+                                    <i data-tw-merge="" data-lucide="book-open" class="stroke-1.5 w-5 h-5"></i>
+                                </div>
+                                <div class="menu__title">
+                                    Assign Subjects
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" th:class="${currentUrl.startsWith('subGroup') or currentUrl.startsWith('assign_subGroup')} ? 'menu menu--active' : 'menu'">
+                                <div class="menu__icon">
+                                    <i data-tw-merge="" data-lucide="group" class="stroke-1.5 w-5 h-5"></i>
+                                </div>
+                                <div class="menu__title">
+                                    SubGroup
+                                    <div class="menu__sub-icon transform " th:classappend="${currentUrl.startsWith('subGroup') or currentUrl.startsWith('assign_subGroup')} ? 'rotate-180' : ''">
+                                        <i data-tw-merge="" data-lucide="chevron-down" class="stroke-1.5 w-5 h-5"></i>
+                                    </div>
+                                </div>
+                            </a>
+                            <ul th:class="${currentUrl.startsWith('subGroup') or currentUrl.startsWith('assign_subGroup')} ? 'menu__sub-open' : ''">
+                                <li>
+                                    <a th:href="@{/subGroup/add}" th:class="${currentUrl == 'subGroup_add'} ? 'menu menu--active' : 'menu'">
+                                        <div class="menu__icon">
+                                            <i data-tw-merge="" data-lucide="plus" class="stroke-1.5 w-5 h-5"></i>
+                                        </div>
+                                        <div class="menu__title">Add SubGroup</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a th:href="@{/subGroup}" th:class="${currentUrl == 'subGroup_list'} ? 'menu menu--active' : 'menu'">
+                                        <div class="menu__icon">
+                                            <i data-tw-merge="" data-lucide="list" class="stroke-1.5 w-5 h-5"></i>
+                                        </div>
+                                        <div class="menu__title">List SubGroup</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a th:href="@{/subGroup/assignStudents}" th:class="${currentUrl == 'assign_subGroup_students'} ? 'menu menu--active' : 'menu'">
+                                        <div class="menu__icon">
+                                            <i data-tw-merge="" data-lucide="user-plus" class="stroke-1.5 w-5 h-5"></i>
+                                        </div>
+                                        <div class="menu__title">Assign Students</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:;" th:class="${currentUrl.startsWith('subject')  or currentUrl.startsWith('assign_subject_')} ? 'menu menu--active' : 'menu'">
+                        <div class="menu__icon">
+                            <i data-tw-merge="" data-lucide="book-open" class="stroke-1.5 w-5 h-5"></i>
+                        </div>
+                        <div class="menu__title">
+                            Subject
+                            <div class="menu__sub-icon transform " th:classappend="${currentUrl.startsWith('subject') or currentUrl.startsWith('assign_subject_')} ? 'rotate-180' : ''">
+                                <i data-tw-merge="" data-lucide="chevron-down" class="stroke-1.5 w-5 h-5"></i>
+                            </div>
+                        </div>
+                    </a>
+                    <ul th:class="${currentUrl.startsWith('subject') or currentUrl.startsWith('assign_subject_')} ? 'menu__sub-open' : ''">
+                        <li>
+                            <a th:href="@{/subject/add}" th:class="${currentUrl == 'subject_add'} ? 'menu menu--active' : 'menu'">
+                                <div class="menu__icon">
+                                    <i data-tw-merge="" data-lucide="plus" class="stroke-1.5 w-5 h-5"></i>
+                                </div>
+                                <div class="menu__title">
+                                    Add Subject
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/subject}" th:class="${currentUrl == 'subject_list'} ? 'menu menu--active' : 'menu'">
+                                <div class="menu__icon">
+                                    <i data-tw-merge="" data-lucide="list" class="stroke-1.5 w-5 h-5"></i>
+                                </div>
+                                <div class="menu__title">
+                                    List Subject
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/subject/assignTeachers}" th:class="${currentUrl == 'assign_subject_teacher'} ? 'menu menu--active' : 'menu'">
+                                <div class="menu__icon">
+                                    <i data-tw-merge="" data-lucide="user-plus" class="stroke-1.5 w-5 h-5"></i>
+                                </div>
+                                <div class="menu__title">
+                                    Assign Teachers
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/subject/assignGroups}" th:class="${currentUrl == 'assign_subject_group'} ? 'menu menu--active' : 'menu'">
+                                <div class="menu__icon">
+                                    <i data-tw-merge="" data-lucide="user-plus" class="stroke-1.5 w-5 h-5"></i>
+                                </div>
+                                <div class="menu__title">
+                                    Assign Groups
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:;" th:class="${currentUrl.startsWith('teacher_') or currentUrl.startsWith('student') or currentUrl.startsWith('assign_teacher_')} ? 'menu menu--active' : 'menu'">
+                        <div class="menu__icon">
+                            <i data-tw-merge="" data-lucide="users" class="stroke-1.5 w-5 h-5"></i>
+                        </div>
+                        <div class="menu__title">
+                            User
+                            <div class="menu__sub-icon transform " th:classappend="${currentUrl.startsWith('teacher_') or currentUrl.startsWith('student') or currentUrl.startsWith('assign_teacher_')} ? 'rotate-180' : ''">
+                                <i data-tw-merge="" data-lucide="chevron-down" class="stroke-1.5 w-5 h-5"></i>
+                            </div>
+                        </div>
+                    </a>
+                    <ul th:class="${currentUrl.startsWith('teacher_') or currentUrl.startsWith('student') or currentUrl.startsWith('assign_teacher_')} ? 'menu__sub-open' : ''">
+                        <li>
+                            <a href="javascript:;" th:class="${currentUrl.startsWith('teacher_') or currentUrl.startsWith('assign_teacher_')} ? 'menu menu--active' : 'menu'">
+                                <div class="menu__icon">
+                                    <i data-tw-merge="" data-lucide="user" class="stroke-1.5 w-5 h-5"></i>
+                                </div>
+                                <div class="menu__title">
+                                    Teacher
+                                    <div class="menu__sub-icon transform " th:classappend="${currentUrl.startsWith('teacher_') or currentUrl.startsWith('assign_teacher_')} ? 'rotate-180' : ''">
+                                        <i data-tw-merge="" data-lucide="chevron-down" class="stroke-1.5 w-5 h-5"></i>
+                                    </div>
+                                </div>
+                            </a>
+                            <ul th:class="${currentUrl.startsWith('teacher_') or currentUrl.startsWith('assign_teacher_')} ? 'menu__sub-open' : ''">
+                                <li>
+                                    <a th:href="@{/teachers/add}" th:class="${currentUrl == 'teacher_add'} ? 'menu menu--active' : 'menu'">
+                                        <div class="menu__icon">
+                                            <i data-tw-merge="" data-lucide="plus" class="stroke-1.5 w-5 h-5"></i>
+                                        </div>
+                                        <div class="menu__title">Add Teacher</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a th:href="@{/teachers}" th:class="${currentUrl == 'teacher_list'} ? 'menu menu--active' : 'menu'">
+                                        <div class="menu__icon">
+                                            <i data-tw-merge="" data-lucide="list" class="stroke-1.5 w-5 h-5"></i>
+                                        </div>
+                                        <div class="menu__title">List Teacher</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a th:href="@{/teachers/assignSubjects}" th:class="${currentUrl == 'assign_teacher_subjects'} ? 'menu menu--active' : 'menu'">
+                                        <div class="menu__icon">
+                                            <i data-tw-merge="" data-lucide="book" class="stroke-1.5 w-5 h-5"></i>
+                                        </div>
+                                        <div class="menu__title">Assign Subjects</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript:;" th:class="${currentUrl.startsWith('student')} ? 'menu menu--active' : 'menu'">
+                                <div class="menu__icon">
+                                    <i data-tw-merge="" data-lucide="user" class="stroke-1.5 w-5 h-5"></i>
+                                </div>
+                                <div class="menu__title">
+                                    Student
+                                    <div class="menu__sub-icon transform " th:classappend="${currentUrl.startsWith('student')} ? 'rotate-180' : ''">
+                                        <i data-tw-merge="" data-lucide="chevron-down" class="stroke-1.5 w-5 h-5"></i>
+                                    </div>
+                                </div>
+                            </a>
+                            <ul th:class="${currentUrl.startsWith('student')} ? 'menu__sub-open' : ''">
+                                <li>
+                                    <a th:href="@{/students/add}" th:class="${currentUrl == 'student_add'} ? 'menu menu--active' : 'menu'">
+                                        <div class="menu__icon">
+                                            <i data-tw-merge="" data-lucide="plus" class="stroke-1.5 w-5 h-5"></i>
+                                        </div>
+                                        <div class="menu__title">Add Student</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a th:href="@{/students}" th:class="${currentUrl == 'student_list'} ? 'menu menu--active' : 'menu'">
+                                        <div class="menu__icon">
+                                            <i data-tw-merge="" data-lucide="list" class="stroke-1.5 w-5 h-5"></i>
+                                        </div>
+                                        <div class="menu__title">List Student</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:;" th:class="${currentUrl.startsWith('teacherConstraint_') or currentUrl.startsWith('groupConstraint_') or currentUrl.startsWith('roomConstraint_')} ? 'menu menu--active' : 'menu'">
+                        <div class="menu__icon">
+                            <i data-tw-merge="" data-lucide="grid" class="stroke-1.5 w-5 h-5"></i>
+                        </div>
+                        <div class="menu__title">
+                            Constraint
+                            <div class="menu__sub-icon transform " th:classappend="${currentUrl.startsWith('teacherConstraint_') or currentUrl.startsWith('groupConstraint_') or currentUrl.startsWith('roomConstraint_')} ? 'rotate-180' : ''">
+                                <i data-tw-merge="" data-lucide="chevron-down" class="stroke-1.5 w-5 h-5"></i>
+                            </div>
+                        </div>
+                    </a>
+                    <ul th:class="${currentUrl.startsWith('teacherConstraint_') or currentUrl.startsWith('groupConstraint_') or currentUrl.startsWith('roomConstraint_')} ? 'menu__sub-open' : ''">
+                        <li>
+                            <a href="javascript:;" th:class="${currentUrl.startsWith('teacherConstraint_')} ? 'menu menu--active' : 'menu'">
+                                <div class="menu__icon">
+                                    <i data-tw-merge="" data-lucide="user" class="stroke-1.5 w-5 h-5"></i>
+                                </div>
+                                <div class="menu__title">
+                                    Teacher Constraint
+                                    <div class="menu__sub-icon transform " th:classappend="${currentUrl.startsWith('teacherConstraint_')} ? 'rotate-180' : ''">
+                                        <i data-tw-merge="" data-lucide="chevron-down" class="stroke-1.5 w-5 h-5"></i>
+                                    </div>
+                                </div>
+                            </a>
+                            <ul th:class="${currentUrl.startsWith('teacherConstraint_')} ? 'menu__sub-open' : ''">
+                                <li>
+                                    <a th:href="@{/teacherConstraints/add}" th:class="${currentUrl == 'teacherConstraint_add'} ? 'menu menu--active' : 'menu'">
+                                        <div class="menu__icon">
+                                            <i data-tw-merge="" data-lucide="plus" class="stroke-1.5 w-5 h-5"></i>
+                                        </div>
+                                        <div class="menu__title">Add Teacher Constraint</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a th:href="@{/teacherConstraints}" th:class="${currentUrl == 'teacherConstraint_list'} ? 'menu menu--active' : 'menu'">
+                                        <div class="menu__icon">
+                                            <i data-tw-merge="" data-lucide="list" class="stroke-1.5 w-5 h-5"></i>
+                                        </div>
+                                        <div class="menu__title">List Teacher Constraint</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript:;" th:class="${currentUrl.startsWith('groupConstraint_')} ? 'menu menu--active' : 'menu'">
+                                <div class="menu__icon">
+                                    <i data-tw-merge="" data-lucide="users-2" class="stroke-1.5 w-5 h-5"></i>
+                                </div>
+                                <div class="menu__title">
+                                    Group Constraint
+                                    <div class="menu__sub-icon transform " th:classappend="${currentUrl.startsWith('groupConstraint_')} ? 'rotate-180' : ''">
+                                        <i data-tw-merge="" data-lucide="chevron-down" class="stroke-1.5 w-5 h-5"></i>
+                                    </div>
+                                </div>
+                            </a>
+                            <ul th:class="${currentUrl.startsWith('groupConstraint_')} ? 'menu__sub-open' : ''">
+                                <li>
+                                    <a th:href="@{/groupConstraints/add}" th:class="${currentUrl == 'groupConstraint_add'} ? 'menu menu--active' : 'menu'">
+                                        <div class="menu__icon">
+                                            <i data-tw-merge="" data-lucide="plus" class="stroke-1.5 w-5 h-5"></i>
+                                        </div>
+                                        <div class="menu__title">Add Group Constraint</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a th:href="@{/groupConstraints}" th:class="${currentUrl == 'groupConstraint_list'} ? 'menu menu--active' : 'menu'">
+                                        <div class="menu__icon">
+                                            <i data-tw-merge="" data-lucide="list" class="stroke-1.5 w-5 h-5"></i>
+                                        </div>
+                                        <div class="menu__title">List Group Constraint</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript:;" th:class="${currentUrl.startsWith('roomConstraint_')} ? 'menu menu--active' : 'menu'">
+                                <div class="menu__icon">
+                                    <i data-tw-merge="" data-lucide="archive" class="stroke-1.5 w-5 h-5"></i>
+                                </div>
+                                <div class="menu__title">
+                                    Room Constraint
+                                    <div class="menu__sub-icon transform " th:classappend="${currentUrl.startsWith('roomConstraint_')} ? 'rotate-180' : ''">
+                                        <i data-tw-merge="" data-lucide="chevron-down" class="stroke-1.5 w-5 h-5"></i>
+                                    </div>
+                                </div>
+                            </a>
+                            <ul th:class="${currentUrl.startsWith('roomConstraint_')} ? 'menu__sub-open' : ''">
+                                <li>
+                                    <a th:href="@{/roomConstraints/add}" th:class="${currentUrl == 'roomConstraint_add'} ? 'menu menu--active' : 'menu'">
+                                        <div class="menu__icon">
+                                            <i data-tw-merge="" data-lucide="plus" class="stroke-1.5 w-5 h-5"></i>
+                                        </div>
+                                        <div class="menu__title">Add Room Constraint</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a th:href="@{/roomConstraints}" th:class="${currentUrl == 'roomConstraint_list'} ? 'menu menu--active' : 'menu'">
+                                        <div class="menu__icon">
+                                            <i data-tw-merge="" data-lucide="list" class="stroke-1.5 w-5 h-5"></i>
+                                        </div>
+                                        <div class="menu__title">List Room Constraint</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:;" th:class="${currentUrl.startsWith('schedule')} ? 'menu menu--active' : 'menu'">
+                        <div class="menu__icon">
+                            <i data-tw-merge="" data-lucide="book" class="stroke-1.5 w-5 h-5"></i>
+                        </div>
+                        <div class="menu__title">
+                            Schedule
+                            <div class="menu__sub-icon transform " th:classappend="${currentUrl.startsWith('schedule')} ? 'rotate-180' : ''">
+                                <i data-tw-merge="" data-lucide="chevron-down" class="stroke-1.5 w-5 h-5"></i>
+                            </div>
+                        </div>
+                    </a>
+                    <ul th:class="${currentUrl.startsWith('schedule')} ? 'menu__sub-open' : ''">
+                        <li>
+                            <a th:href="@{/schedule/all}" th:class="${currentUrl.startsWith('schedule_list_')} ? 'menu menu--active' : 'menu'">
+                                <div class="menu__icon">
+                                    <i data-tw-merge="" data-lucide="user" class="stroke-1.5 w-5 h-5"></i>
+                                </div>
+                                <div class="menu__title">
+                                    Generate Schedule
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/schedule/selectTeacher}" th:class="${currentUrl == 'schedule_select_teacher'} ? 'menu menu--active' : 'menu'">
+                                <div class="menu__icon">
+                                    <i data-tw-merge="" data-lucide="user" class="stroke-1.5 w-5 h-5"></i>
+                                </div>
+                                <div class="menu__title">
+                                    Schedule by Teacher
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/schedule/selectGroup}" th:class="${currentUrl == 'schedule_select_group'} ? 'menu menu--active' : 'menu'">
+                                <div class="menu__icon">
+                                    <i data-tw-merge="" data-lucide="chevron-down" class="stroke-1.5 w-5 h-5"></i>
+                                </div>
+                                <div class="menu__title">
+                                    Schedule by Group
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="/logout" th:class="${currentUrl == '/logout'} ? 'menu menu--active' : 'menu'">
+                        <div class="menu__icon">
+                            <i data-tw-merge="" data-lucide="log-out" class="stroke-1.5 w-5 h-5"></i>
+                        </div>
+                        <div class="menu__title">
+                            Logout
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

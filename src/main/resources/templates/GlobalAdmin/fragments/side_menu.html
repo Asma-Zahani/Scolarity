@@ -1,0 +1,101 @@
+<div th:fragment="side_menu">
+    <nav class="side-nav hidden w-[80px] overflow-x-hidden pb-16 pr-5 md:block xl:w-[230px]">
+        <a class="flex items-center pt-4 pl-5 intro-x" href="#">
+            <img class="w-6" th:src="@{/dist/images/logo.svg}" alt="Midone - Tailwind Admin Dashboard Template">
+            <span class="hidden ml-3 text-lg text-white xl:block"> Projet </span>
+        </a>
+        <div class="my-6 side-nav__divider"></div>
+        <ul>
+            <li>
+                <a th:href="@{/index}" th:class="${currentUrl == '/index'} ? 'side-menu side-menu--active' : 'side-menu'">
+                    <div class="side-menu__icon">
+                        <i data-tw-merge="" data-lucide="home" class="stroke-1.5 w-5 h-5"></i>
+                    </div>
+                    <div class="side-menu__title">
+                        Dashboard
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" th:class="${currentUrl.startsWith('university_') or currentUrl.startsWith('assign_university_')} ? 'side-menu side-menu--active' : 'side-menu'">
+                    <div class="side-menu__icon">
+                        <i data-tw-merge="" data-lucide="school" class="stroke-1.5 w-5 h-5"></i>
+                    </div>
+                    <div class="side-menu__title">
+                        University
+                        <div class="side-menu__sub-icon transform" th:classappend="${currentUrl.startsWith('university_') or currentUrl.startsWith('assign_university_')} ? 'rotate-180' : ''">
+                            <i data-tw-merge="" data-lucide="chevron-down" class="stroke-1.5 w-5 h-5"></i>
+                        </div>
+                    </div>
+                </a>
+                <ul th:class="${currentUrl.startsWith('university_') or currentUrl.startsWith('assign_university_')} ? 'side-menu__sub-open' : ''">
+                    <li>
+                        <a th:href="@{/universities/add}" th:class="${currentUrl == 'university_add'} ? 'side-menu side-menu--active' : 'side-menu'">
+                            <div class="side-menu__icon">
+                                <i data-tw-merge="" data-lucide="plus" class="stroke-1.5 w-5 h-5"></i>
+                            </div>
+                            <div class="side-menu__title">
+                                Add University
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/universities}" class="side-menu " th:classappend="${currentUrl == 'university_list'} ? 'side-menu--active' : ''">
+                            <div class="side-menu__icon">
+                                <i data-tw-merge="" data-lucide="list" class="stroke-1.5 w-5 h-5"></i>
+                            </div>
+                            <div class="side-menu__title">
+                                List University
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="javascript:;" th:class="${currentUrl.startsWith('universityAdmin_')} ? 'side-menu side-menu--active' : 'side-menu'">
+                    <div class="side-menu__icon">
+                        <i data-tw-merge="" data-lucide="key" class="stroke-1.5 w-5 h-5"></i>
+                    </div>
+                    <div class="side-menu__title">
+                        University Admin
+                        <div class="side-menu__sub-icon transform" th:classappend="${currentUrl.startsWith('universityAdmin_')} ? 'rotate-180' : ''">
+                            <i data-tw-merge="" data-lucide="chevron-down" class="stroke-1.5 w-5 h-5"></i>
+                        </div>
+                    </div>
+                </a>
+                <ul th:class="${currentUrl.startsWith('universityAdmin_')} ? 'side-menu__sub-open' : ''">
+                    <li>
+                        <a th:href="@{/universityAdmins/add}" th:class="${currentUrl == 'universityAdmin_add'} ? 'side-menu side-menu--active' : 'side-menu'">
+                            <div class="side-menu__icon">
+                                <i data-tw-merge="" data-lucide="plus" class="stroke-1.5 w-5 h-5"></i>
+                            </div>
+                            <div class="side-menu__title">
+                                Add University Admin
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/universityAdmins}" class="side-menu " th:classappend="${currentUrl == 'universityAdmin_list'} ? 'side-menu--active' : ''">
+                            <div class="side-menu__icon">
+                                <i data-tw-merge="" data-lucide="list" class="stroke-1.5 w-5 h-5"></i>
+                            </div>
+                            <div class="side-menu__title">
+                                List University Admin
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a th:href="@{/logout}" th:class="${currentUrl == '/logout'} ? 'side-menu side-menu--active' : 'side-menu'">
+                    <div class="side-menu__icon">
+                        <i data-tw-merge="" data-lucide="log-out" class="stroke-1.5 w-5 h-5"></i>
+                    </div>
+                    <div class="side-menu__title">
+                        Logout
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" class="opacity-0" lang="en">
+<head th:replace="~{fragments/html_head :: html_head}"></head>
+<body>
+<div class="rubick px-5 sm:px-8 py-5 before:content-[''] before:bg-gradient-to-b before:from-theme-1 before:to-theme-2 dark:before:from-darkmode-800 dark:before:to-darkmode-800 before:fixed before:inset-0 before:z-[-1]">
+    <div th:replace="~{UniversityAdmin/fragments/mobile_menu :: mobile_menu}"></div>
+    <div class="mt-[4.7rem] flex md:mt-0">
+        <div th:replace="~{UniversityAdmin/fragments/side_menu :: side_menu}"></div>
+        <div class="md:max-w-auto min-h-screen min-w-0 max-w-full flex-1 rounded-[30px] bg-slate-100 px-4 pb-10 before:block before:h-px before:w-full before:content-[''] dark:bg-darkmode-700 md:px-[22px]">
+            <div class="relative z-[51] flex h-[67px] items-center border-b border-slate-200">
+                <nav aria-label="breadcrumb" class="flex -intro-x mr-auto hidden sm:flex">
+                    <ol class="flex items-center text-theme-1 dark:text-slate-300">
+                        <li>
+                            <a th:href="@{/}">Scolarity</a>
+                        </li>
+                        <li class="relative ml-5 pl-0.5 before:content-[''] before:w-[14px] before:h-[14px] before:bg-chevron-black before:transform before:rotate-[-90deg] before:bg-[length:100%] before:-ml-[1.125rem] before:absolute before:my-auto before:inset-y-0 dark:before:bg-chevron-white text-slate-800 cursor-text dark:text-slate-400">
+                            <a th:href="@{/schedule/all}">Schedule</a>
+                        </li>
+                    </ol>
+                </nav>
+                <div th:replace="~{fragments/profile_top_bar :: profile_top_bar}"></div>
+            </div>
+            <div class="intro-y mt-8 flex flex-col items-center sm:flex-row">
+                <h2 class="mr-auto text-lg font-medium">Calendar</h2>
+            </div>
+            <div class="mt-5 grid grid-cols-12 gap-5">
+                <!-- BEGIN: Calendar Side Menu -->
+                <div class="col-span-12 xl:col-span-4 2xl:col-span-3">
+                    <div class="box intro-y p-5">
+                        <a th:href="@{/schedule/generateSchedule}" th:if="${schedules != null and !schedules.isEmpty()}"  data-tw-merge="" type="button" class="transition duration-200 border shadow-sm inline-flex items-center justify-center py-2 px-3 rounded-md font-medium cursor-pointer focus:ring-4 focus:ring-primary focus:ring-opacity-20 focus-visible:outline-none dark:focus:ring-slate-700 dark:focus:ring-opacity-50 [&:hover:not(:disabled)]:bg-opacity-90 [&:hover:not(:disabled)]:border-opacity-90 [&:not(button)]:text-center disabled:opacity-70 disabled:cursor-not-allowed bg-primary border-primary text-white dark:border-primary mt-2 w-full">
+                            <i data-tw-merge="" data-lucide="edit" class="stroke-1.5 mr-2 h-4 w-4"></i>
+                            Generate Schedule
+                        </a>
+                        <button th:if="${schedules == null}" data-tw-merge="" type="button" class="transition duration-200 border shadow-sm inline-flex items-center justify-center py-2 px-3 rounded-md font-medium cursor-pointer focus:ring-4 focus:ring-primary focus:ring-opacity-20 focus-visible:outline-none dark:focus:ring-slate-700 dark:focus:ring-opacity-50 [&:hover:not(:disabled)]:bg-opacity-90 [&:hover:not(:disabled)]:border-opacity-90 [&:not(button)]:text-center disabled:opacity-70 disabled:cursor-not-allowed bg-primary border-primary text-white dark:border-primary mt-2 w-full"
+                                th:disabled="${schedules == null}">
+                            <i data-tw-merge="" data-lucide="edit" class="stroke-1.5 mr-2 h-4 w-4"></i>
+                            Generate Schedule
+                        </button>
+                        <a th:if="${schedules != null and schedules.isEmpty()}" data-tw-merge="" href="#" data-tw-toggle="modal" data-tw-target="#warning-modal-preview" class="transition duration-200 border shadow-sm inline-flex items-center justify-center py-2 px-3 rounded-md font-medium cursor-pointer focus:ring-4 focus:ring-primary focus:ring-opacity-20 focus-visible:outline-none dark:focus:ring-slate-700 dark:focus:ring-opacity-50 [&:hover:not(:disabled)]:bg-opacity-90 [&:hover:not(:disabled)]:border-opacity-90 [&:not(button)]:text-center disabled:opacity-70 disabled:cursor-not-allowed bg-primary border-primary text-white dark:border-primary mt-2 w-full"
+                           th:disabled="${schedules == null}">
+                            <i data-tw-merge="" data-lucide="edit" class="stroke-1.5 mr-2 h-4 w-4"></i>
+                            Generate Schedule
+                        </a>
+                        <div th:if="${schedules == null}" data-tw-merge="" class="full-calendar-draggable mb-5 mt-6 border-b border-t border-slate-200/60 py-3 dark:border-darkmode-400">
+                            <div role="alert" class="alert relative border rounded-md px-5 py-4 border-warning text-warning dark:border-warning pl-5 pr-16 bg-warning/20 dark:border-darkmode-400 dark:bg-darkmode-400">
+                                <div class="flex items-center">
+                                    <span>
+                                        <i data-tw-merge="" data-lucide="alert-triangle" class="stroke-1.5 mr-3 h-6 w-6"></i>
+                                    </span>
+                                    <span class="text-slate-800 dark:text-slate-500">
+                                        Please fill in your database Before Generating Schedule
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div th:if="${schedules != null and schedules.isEmpty()}" data-tw-merge="" class="full-calendar-draggable mb-5 mt-6 border-b border-t border-slate-200/60 py-3 dark:border-darkmode-400">
+                            <div role="alert" class="alert relative border rounded-md px-5 py-4 border-warning text-warning dark:border-warning pl-5 pr-16 bg-warning/20 dark:border-darkmode-400 dark:bg-darkmode-400">
+                                <div class="flex items-center">
+                                    <span>
+                                        <i data-tw-merge="" data-lucide="alert-triangle" class="stroke-1.5 mr-3 h-6 w-6"></i>
+                                    </span>
+                                    <span class="text-slate-800 dark:text-slate-500">
+                                        Your schedule is already generated
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END: Calendar Side Menu -->
+                <!-- BEGIN: Calendar Content -->
+                <div class="col-span-12 xl:col-span-8 2xl:col-span-9">
+                    <div class="box p-5">
+                        <div data-tw-merge="" class="full-calendar">
+                            <div></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END: Calendar Content -->
+            </div>
+        </div>
+    </div>
+</div>
+<div data-tw-backdrop="" aria-hidden="true" tabindex="-1" id="warning-modal-preview" class="modal group bg-black/60 transition-[visibility,opacity] w-screen h-screen fixed left-0 top-0 [&:not(.show)]:duration-[0s,0.2s] [&:not(.show)]:delay-[0.2s,0s] [&:not(.show)]:invisible [&:not(.show)]:opacity-0 [&.show]:visible [&.show]:opacity-100 [&.show]:duration-[0s,0.4s]">
+    <div data-tw-merge="" class="w-[90%] mx-auto bg-white relative rounded-md shadow-md transition-[margin-top,transform] duration-[0.4s,0.3s] -mt-16 group-[.show]:mt-16 group-[.modal-static]:scale-[1.05] dark:bg-darkmode-600 sm:w-[460px]">
+        <div class="p-5 text-center">
+            <i data-tw-merge="" data-lucide="alert-triangle" class="stroke-1.5 mx-auto mt-3 h-16 w-16 text-warning"></i>
+            <div class="mt-5 text-3xl">Regenerate?</div>
+            <div class="mt-2 text-slate-500">
+                Do you want to regenerate the schedule? This will overwrite the existing one
+            </div>
+        </div>
+        <div class="px-5 pb-8 text-center">
+            <button data-tw-merge="" data-tw-dismiss="modal" type="button" class="transition duration-200 border shadow-sm inline-flex items-center justify-center py-2 px-3 rounded-md font-medium cursor-pointer focus:ring-4 focus:ring-primary focus:ring-opacity-20 focus-visible:outline-none dark:focus:ring-slate-700 dark:focus:ring-opacity-50 [&:hover:not(:disabled)]:bg-opacity-90 [&:hover:not(:disabled)]:border-opacity-90 [&:not(button)]:text-center disabled:opacity-70 disabled:cursor-not-allowed border-secondary text-slate-500 dark:border-darkmode-100/40 dark:text-slate-300 [&:hover:not(:disabled)]:bg-secondary/20 [&:hover:not(:disabled)]:dark:bg-darkmode-100/10 mr-1 w-24">Cancel</button>
+            <a th:href="@{/schedule/regenerateSchedule}" data-tw-merge="" data-tw-dismiss="modal" type="button" class="transition duration-200 border shadow-sm inline-flex items-center justify-center py-2 px-3 rounded-md font-medium cursor-pointer focus:ring-4 focus:ring-primary focus:ring-opacity-20 focus-visible:outline-none dark:focus:ring-slate-700 dark:focus:ring-opacity-50 [&:hover:not(:disabled)]:bg-opacity-90 [&:hover:not(:disabled)]:border-opacity-90 [&:not(button)]:text-center disabled:opacity-70 disabled:cursor-not-allowed bg-primary border-primary text-white dark:border-primary w-24">Ok</a>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments/scripts :: scripts}"></div>
+</body>
+</html>

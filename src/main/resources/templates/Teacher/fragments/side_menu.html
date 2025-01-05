@@ -1,0 +1,87 @@
+<div th:fragment="side_menu">
+    <nav class="side-nav hidden w-[80px] overflow-x-hidden pb-16 pr-5 md:block xl:w-[230px]">
+        <a class="flex items-center pt-4 pl-5 intro-x" href="#">
+            <img class="w-6" th:src="@{/dist/images/logo.svg}" alt="Midone - Tailwind Admin Dashboard Template">
+            <span class="hidden ml-3 text-lg text-white xl:block"> Projet </span>
+        </a>
+        <div class="my-6 side-nav__divider"></div>
+        <ul>
+            <li>
+                <a th:href="@{/}" th:class="${currentUrl == '/teacher/index'} ? 'side-menu side-menu--active' : 'side-menu'">
+                    <div class="side-menu__icon">
+                        <i data-tw-merge="" data-lucide="home" class="stroke-1.5 w-5 h-5"></i>
+                    </div>
+                    <div class="side-menu__title">
+                        Dashboard
+                    </div>
+                </a>
+            </li>
+            <li>
+                <div th:if="${schedules.isEmpty()}" class="side-menu side-menu--disabled">
+                    <div class="side-menu__icon">
+                        <i data-tw-merge="" data-lucide="calendar-x" class="stroke-1.5 w-5 h-5"></i>
+                    </div>
+                    <div class="side-menu__title">
+                        Schedule
+                    </div>
+                </div>
+                <a th:if="${!schedules.isEmpty()}" th:href="@{/teacher/schedule}" th:class="${currentUrl == '/teacher/schedule'} ? 'side-menu side-menu--active' : 'side-menu'">
+                    <div class="side-menu__icon">
+                        <i data-tw-merge="" data-lucide="calendar-check" class="stroke-1.5 w-5 h-5"></i>
+                    </div>
+                    <div class="side-menu__title">
+                        Schedule
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/teacher/teachers}" th:class="${currentUrl == '/teacher/teachers'} ? 'side-menu side-menu--active' : 'side-menu'">
+                    <div class="side-menu__icon">
+                        <i data-tw-merge="" data-lucide="users" class="stroke-1.5 w-5 h-5"></i>
+                    </div>
+                    <div class="side-menu__title">
+                        Teachers
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/teacher/selectGroup}" th:class="${currentUrl == '/teacher/selectGroup' or currentUrl == '/teacher/students'} ? 'side-menu side-menu--active' : 'side-menu'">
+                    <div class="side-menu__icon">
+                        <i data-tw-merge="" data-lucide="users" class="stroke-1.5 w-5 h-5"></i>
+                    </div>
+                    <div class="side-menu__title">
+                        Students
+                    </div>
+                </a>
+            </li>
+            <li>
+                <div th:if="${subjects <= 0}" class="side-menu side-menu--disabled">
+                    <div class="side-menu__icon">
+                        <i data-tw-merge="" data-lucide="book-x" class="stroke-1.5 w-5 h-5"></i>
+                    </div>
+                    <div class="side-menu__title">
+                        Subjects
+                    </div>
+                </div>
+                <a th:if="${subjects > 0}" th:href="@{/teacher/subjects}" th:class="${currentUrl == '/teacher/subjects'} ? 'side-menu side-menu--active' : 'side-menu'">
+                    <div class="side-menu__icon">
+                        <i data-tw-merge="" data-lucide="book" class="stroke-1.5 w-5 h-5"></i>
+                    </div>
+                    <div class="side-menu__title">
+                        Subjects
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/logout}" th:class="${currentUrl == '/logout'} ? 'side-menu side-menu--active' : 'side-menu'">
+                    <div class="side-menu__icon">
+                        <i data-tw-merge="" data-lucide="log-out" class="stroke-1.5 w-5 h-5"></i>
+                    </div>
+                    <div class="side-menu__title">
+                        Logout
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
