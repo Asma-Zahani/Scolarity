@@ -1,14 +1,25 @@
-# Étape 1 : Utiliser une image de base avec JDK
-FROM eclipse-temurin:17-jdk-jammy
+# Étape 1 : Compiler le projet avec Maven
+FROM maven:3.9.6-eclipse-temurin-17 AS builder
 
-# Étape 2 : Définir le répertoire de travail dans le conteneur
 WORKDIR /app
 
-# Étape 3 : Copier le fichier JAR généré par Maven
-COPY target/Scolarite-*.jar app.jar
+# Copier le projet
+COPY pom.xml .
+COPY src ./src
 
-# Étape 4 : Exposer le port sur lequel l'application tourne
+# Compiler l’application (et générer le .jar dans /app/target)
+RUN mvn clean package -DskipTests
+
+# Étape 2 : Image minimale pour exécuter le JAR
+FROM eclipse-temurin:17-jre
+
+WORKDIR /app
+
+# Copier le fichier JAR depuis le container builder
+COPY --from=builder /app/target/*.jar app.jar
+
+# Exposer le port
 EXPOSE 8080
 
-# Étape 5 : Commande pour exécuter l'application
+# Commande pour lancer l'application
 ENTRYPOINT ["java", "-jar", "app.jar"]
