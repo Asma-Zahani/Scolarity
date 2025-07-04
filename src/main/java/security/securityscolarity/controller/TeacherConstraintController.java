@@ -10,14 +10,12 @@ import security.securityscolarity.entity.*;
 import security.securityscolarity.repository.ChronoDayRepository;
 import security.securityscolarity.repository.ChronoRepository;
 import security.securityscolarity.repository.DayRepository;
-import security.securityscolarity.service.IMPL.ChronoDayService;
-import security.securityscolarity.service.IMPL.DayService;
-import security.securityscolarity.service.IMPL.TeacherService;
-import security.securityscolarity.service.IMPL.UserService;
+import security.securityscolarity.service.IMPL.*;
 import security.securityscolarity.service.ITeacherConstraintService;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
@@ -44,6 +42,7 @@ public class TeacherConstraintController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("teacherConstraints", teacherConstraintService.findTeacherConstraintByTeacherUniversity(universityAdmin.getUniversity()));
         }
         model.addAttribute("currentUrl", "teacherConstraint_list");
@@ -52,6 +51,11 @@ public class TeacherConstraintController {
 
     @GetMapping("/detail")
     public String getTeacherConstraint(@RequestParam("teacherConstraintId") Long id, Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+        }
         TeacherConstraint teacherConstraint = teacherConstraintService.findByTeacherConstraintID(id);
         model.addAttribute("teacherConstraint", teacherConstraint);
         model.addAttribute("currentUrl", "teacherConstraint_detail");
@@ -63,10 +67,15 @@ public class TeacherConstraintController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("teachers",teacherService.findTeacherByUniversity(universityAdmin.getUniversity()));
             model.addAttribute("chronoDays",chronoDayService.findByUniversity(universityAdmin.getUniversity()));
         }
-        model.addAttribute("teacherConstraint", new TeacherConstraint());
+        TeacherConstraint teacherConstraint = new TeacherConstraint();
+        List<Chrono> chronos = Arrays.asList(chronoRepository.findByChronoName("S4"), chronoRepository.findByChronoName("S5"), chronoRepository.findByChronoName("S6"));
+        teacherConstraint.initializeUnavailableChronoDays(chronos , dayRepository.findByDayName("Samedi"));
+        model.addAttribute("teacherConstraint", teacherConstraint);
+        model.addAttribute("days", dayRepository.findAll());
         model.addAttribute("action", "Add");
         model.addAttribute("currentUrl", "teacherConstraint_add");
         return "UniversityAdmin/teacherConstraint/formTeacherConstraint";
@@ -75,11 +84,11 @@ public class TeacherConstraintController {
     @PostMapping("/addTeacherConstraint")
     public String addTeacherConstraint(@ModelAttribute TeacherConstraint teacherConstraint,
                                        @RequestParam("chronoDayIds") String[] chronoDayIds,
+                                       @RequestParam("dayIds") String[] dayIds,
                                        RedirectAttributes redirectAttributes) {
-        System.out.println(Arrays.toString(chronoDayIds));
-        List<ChronoDay> unavailableDays = Arrays.stream(chronoDayIds)
+        List<ChronoDay> unavailableChronoDays = Arrays.stream(chronoDayIds)
                 .map(chronoDayIdStr -> {
-                    String[] parts = chronoDayIdStr.strip().split(",");
+                    String[] parts = chronoDayIdStr.strip().split(";");
                     Long chronoId = Long.parseLong(parts[0].strip());
                     Long dayId = Long.parseLong(parts[1].strip());
                     return chronoDayRepository.findById(new ChronoDayId(
@@ -88,7 +97,17 @@ public class TeacherConstraintController {
                             ).orElseThrow(() -> new RuntimeException("ChronoDay not found"));
                 })
                 .collect(Collectors.toList());
+        teacherConstraint.setUnavailableChronoDays(unavailableChronoDays);
 
+        List<Day> unavailableDays = Arrays.stream(dayIds)
+                .map(dayId -> {
+                    Day day = dayRepository.findByDayId(Long.valueOf(dayId));
+                    if (day == null) {
+                        throw new RuntimeException("Day not found for ID: " + dayId);
+                    }
+                    return day;
+                })
+                .toList();
         teacherConstraint.setUnavailableDays(unavailableDays);
 
         teacherConstraintService.addTeacherConstraint(teacherConstraint);
@@ -108,9 +127,11 @@ public class TeacherConstraintController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("teachers",teacherService.findTeacherByUniversity(universityAdmin.getUniversity()));
             model.addAttribute("chronoDays",chronoDayService.findByUniversity(universityAdmin.getUniversity()));
         }
+        model.addAttribute("days", dayRepository.findAll());
         model.addAttribute("teacherConstraint", teacherConstraintService.findByTeacherConstraintID(id));
         model.addAttribute("action", "Update");
         model.addAttribute("currentUrl", "teacherConstraint_update");
@@ -118,7 +139,33 @@ public class TeacherConstraintController {
     }
 
     @PostMapping("/updateTeacherConstraint")
-    public String updateTeacherConstraint(@ModelAttribute TeacherConstraint teacherConstraint, RedirectAttributes redirectAttributes) {
+    public String updateTeacherConstraint(@ModelAttribute TeacherConstraint teacherConstraint,
+                                          @RequestParam("chronoDayIds") String[] chronoDayIds,
+                                          @RequestParam("dayIds") String[] dayIds,
+                                          RedirectAttributes redirectAttributes) {
+        List<ChronoDay> unavailableChronoDays = Arrays.stream(chronoDayIds)
+                .map(chronoDayIdStr -> {
+                    String[] parts = chronoDayIdStr.strip().split(";");
+                    Long chronoId = Long.parseLong(parts[0].strip());
+                    Long dayId = Long.parseLong(parts[1].strip());
+                    return chronoDayRepository.findById(new ChronoDayId(
+                            chronoRepository.findByChronoId(chronoId),
+                            dayRepository.findByDayId(dayId))
+                    ).orElseThrow(() -> new RuntimeException("ChronoDay not found"));
+                })
+                .collect(Collectors.toList());
+        teacherConstraint.setUnavailableChronoDays(unavailableChronoDays);
+
+        List<Day> unavailableDays = Arrays.stream(dayIds)
+                .map(dayId -> {
+                    Day day = dayRepository.findByDayId(Long.valueOf(dayId));
+                    if (day == null) {
+                        throw new RuntimeException("Day not found for ID: " + dayId);
+                    }
+                    return day;
+                })
+                .toList();
+        teacherConstraint.setUnavailableDays(unavailableDays);
         teacherConstraintService.updateTeacherConstraint(teacherConstraint.getId(), teacherConstraint);
         redirectAttributes.addFlashAttribute("successMessage", "Teacher constraint updated");
         return "redirect:/teacherConstraints";

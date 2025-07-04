@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import security.securityscolarity.entity.*;
 import security.securityscolarity.service.IMPL.*;
 
@@ -36,7 +38,7 @@ public class RoleStudentController {
         int studentCount = 0;
         List<Schedule> listSchedules = new ArrayList<>();
         if (user instanceof Student student) {
-            model.addAttribute("student", student);
+            model.addAttribute("user", student);
             if (student.getSubGroup() != null) {
                 subjectCount = subjectService.getSubjectCountByGroup(student.getSubGroup().getGroup().getGroupId());
                 studentCount = studentService.countStudentsByGroupExcludingCurrentUser(student.getSubGroup().getGroup().getGroupId(), user.getId());
@@ -61,6 +63,7 @@ public class RoleStudentController {
         int subjectCount = 0;
         int studentCount = 0;
         if (user instanceof Student student) {
+            model.addAttribute("user", student);
             subjectCount = subjectService.getSubjectCountByGroup(student.getSubGroup().getGroup().getGroupId());
             studentCount = studentService.countStudentsByGroupExcludingCurrentUser(student.getSubGroup().getGroup().getGroupId(), user.getId());
 
@@ -89,7 +92,6 @@ public class RoleStudentController {
                 scheduleMap.get(chronoName).get(dayName).get(groupSession).add(schedule);
             }
 
-            model.addAttribute("student",student);
             model.addAttribute("schedules", scheduleMap);
             model.addAttribute("chronos", chronoService.findByUniversity(student.getUniversity()));
             model.addAttribute("days", dayService.findAll().stream().sorted(Comparator.comparingInt(Day::getDayNumber)).toList());
@@ -111,9 +113,9 @@ public class RoleStudentController {
         int studentCount = 0;
         List<Schedule> listSchedules = new ArrayList<>();
         if (user instanceof Student student) {
-            model.addAttribute("teachers", teacherService.findTeacherByUniversity(student.getUniversity()));
-            model.addAttribute("student", student);
+            model.addAttribute("user", student);
             if (student.getSubGroup() != null) {
+                model.addAttribute("teachers", teacherService.findBySchedules_IdGroup(student.getSubGroup().getGroup()));
                 subjectCount = subjectService.getSubjectCountByGroup(student.getSubGroup().getGroup().getGroupId());
                 studentCount = studentService.countStudentsByGroupExcludingCurrentUser(student.getSubGroup().getGroup().getGroupId(), user.getId());
                 listSchedules = student.getSubGroup().getGroup().getSchedules();
@@ -134,7 +136,7 @@ public class RoleStudentController {
         int studentCount = 0;
         List<Schedule> listSchedules = new ArrayList<>();
         if (user instanceof Student student) {
-            model.addAttribute("student", student);
+            model.addAttribute("user", student);
             if (student.getSubGroup() != null) {
                 subjectCount = subjectService.getSubjectCountByGroup(student.getSubGroup().getGroup().getGroupId());
                 studentCount = studentService.countStudentsByGroupExcludingCurrentUser(student.getSubGroup().getGroup().getGroupId(), user.getId());
@@ -150,6 +152,31 @@ public class RoleStudentController {
         return "Student/subjects";
     }
 
+    @RequestMapping(value = "/subject/{subjectName}", method = RequestMethod.GET)
+    public String Subject(Model model, HttpServletRequest request,  @RequestParam("subjectId") Long id) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        int subjectCount = 0;
+        int studentCount = 0;
+        List<Schedule> listSchedules = new ArrayList<>();
+        if (user instanceof Student student) {
+            model.addAttribute("user", student);
+            if (student.getSubGroup() != null) {
+                subjectCount = subjectService.getSubjectCountByGroup(student.getSubGroup().getGroup().getGroupId());
+                studentCount = studentService.countStudentsByGroupExcludingCurrentUser(student.getSubGroup().getGroup().getGroupId(), user.getId());
+                listSchedules = student.getSubGroup().getGroup().getSchedules();
+                model.addAttribute("subject", subjectService.findBySubjectID(id));
+
+            }
+        }
+        String currentUrl = request.getRequestURI();
+        model.addAttribute("students", studentCount);
+        model.addAttribute("subjects", subjectCount);
+        model.addAttribute("schedules", listSchedules);
+        model.addAttribute("currentUrl", currentUrl);
+        return "Student/subject";
+    }
+
     @RequestMapping(value = "/classmates", method = RequestMethod.GET)
     public String Classmates(Model model, HttpServletRequest request) {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -159,7 +186,7 @@ public class RoleStudentController {
         List<Student> studentsInSameGroup = new ArrayList<>();
         List<Schedule> listSchedules = new ArrayList<>();
         if (user instanceof Student student) {
-            model.addAttribute("student", student);
+            model.addAttribute("user", student);
             if (student.getSubGroup() != null) {
                 subjectCount = subjectService.getSubjectCountByGroup(student.getSubGroup().getGroup().getGroupId());
                 studentCount = studentService.countStudentsByGroupExcludingCurrentUser(student.getSubGroup().getGroup().getGroupId(), user.getId());

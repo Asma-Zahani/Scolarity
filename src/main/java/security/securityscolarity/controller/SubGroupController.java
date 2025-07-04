@@ -32,6 +32,7 @@ public class SubGroupController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("allSubGroup", subGroupService.findByGroupUniversity(universityAdmin.getUniversity()));
         }
         model.addAttribute("currentUrl", "subGroup_list");
@@ -40,6 +41,11 @@ public class SubGroupController {
 
     @GetMapping("/detail")
     public String getSubGroup(@RequestParam("subGroupId") Long id, Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+        }
         SubGroup subGroup = subGroupService.findBySubGroupID(id);
         model.addAttribute("subGroup", subGroup);
         model.addAttribute("currentUrl", "subGroup_detail");
@@ -51,6 +57,7 @@ public class SubGroupController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("groups",groupService.findByUniversity(universityAdmin.getUniversity()));
             model.addAttribute("students",studentService.getStudentNotAssignedToSubGroupWithUniversity(universityAdmin.getUniversity()));
         }
@@ -89,6 +96,7 @@ public class SubGroupController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("subGroups",subGroupService.findByGroupUniversity(universityAdmin.getUniversity()));
             model.addAttribute("students",studentService.getStudentNotAssignedToSubGroupWithUniversity(universityAdmin.getUniversity()));
         }
@@ -116,6 +124,11 @@ public class SubGroupController {
 
     @GetMapping("/update")
     public String updateSubGroup(@RequestParam("subGroupId") Long id, Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+        }
         SubGroup subGroup = subGroupService.findBySubGroupID(id);
         model.addAttribute("subGroup", subGroup);
         model.addAttribute("action","Update");
@@ -129,9 +142,7 @@ public class SubGroupController {
     public String updateSubGroup(@ModelAttribute SubGroup subGroup,
                                  @RequestParam(name = "studentIds", required = false) List<Long> studentIds) {
         subGroupService.updateSubGroup(subGroup.getSubGroupId(),subGroup);
-
         subGroupService.clearStudents(subGroup.getSubGroupId());
-
         if (studentIds != null && !studentIds.isEmpty()) {
             for (Long id : studentIds) {
                 Student student = studentService.findByStudentID(id);

@@ -16,8 +16,6 @@ public class BuildingService implements IBuildingService{
     BuildingRepository buildingRepository;
     @Autowired
     private UniversityService universityService;
-    @Autowired
-    private UniversityRepository universityRepository;
 
     public List<Building> findAll() {
         return buildingRepository.findAll();

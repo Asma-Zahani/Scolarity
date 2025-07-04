@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" class="opacity-0" lang="en">
+<head>
+    <title>Scolarite</title>
+    <link rel="stylesheet" th:href="@{/dist/css/vendors/dropzone.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/vendors/highlight.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/vendors/tippy.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/themes/rubick/side-nav.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/vendors/simplebar.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/components/mobile-menu.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/app.css}">
+</head>
+<body>
+<div class="rubick px-5 sm:px-8 py-5 before:content-[''] before:bg-gradient-to-b before:from-theme-1 before:to-theme-2 dark:before:from-darkmode-800 dark:before:to-darkmode-800 before:fixed before:inset-0 before:z-[-1]">
+    <div th:replace="~{Teacher/fragments/mobile_menu :: mobile_menu}"></div>
+    <div class="mt-[4.7rem] flex md:mt-0">
+        <div th:replace="~{Teacher/fragments/side_menu :: side_menu}"></div>
+        <div class="md:max-w-auto min-h-screen min-w-0 max-w-full flex-1 rounded-[30px] bg-slate-100 px-4 pb-10 before:block before:h-px before:w-full before:content-[''] dark:bg-darkmode-700 md:px-[22px]">
+            <div class="relative z-[51] flex h-[67px] items-center border-b border-slate-200">
+                <nav aria-label="breadcrumb" class="flex -intro-x mr-auto hidden sm:flex">
+                    <ol class="flex items-center text-theme-1 dark:text-slate-300">
+                        <li>
+                            <a th:href="@{/}">Scolarity</a>
+                        </li>
+                        <li class="relative ml-5 pl-0.5 before:content-[''] before:w-[14px] before:h-[14px] before:bg-chevron-black before:transform before:rotate-[-90deg] before:bg-[length:100%] before:-ml-[1.125rem] before:absolute before:my-auto before:inset-y-0 dark:before:bg-chevron-white text-slate-800 cursor-text dark:text-slate-400">
+                            <a th:href="@{/student/subjects}">Subjects</a>
+                        </li>
+                    </ol>
+                </nav>
+                <div th:replace="~{fragments/profile_top_bar :: profile_top_bar}"></div>
+            </div>
+            <div class="intro-y mt-8 flex items-center">
+                <h2 class="mr-auto text-lg font-medium" th:text="*{subject.subjectName}"></h2>
+            </div>
+            <div class="mt-5 grid grid-cols-12 gap-6">
+                <div class="intro-y col-span-12 lg:col-span-12">
+                    <!-- BEGIN: Single File Upload -->
+                    <div class="preview-component intro-y box">
+                        <div class="p-5">
+                            <div class="preview relative [&.hide]:overflow-hidden [&.hide]:h-0">
+                                <form data-single="true" action="https://midone-html.vercel.app/file-upload" class="[&.dropzone]:border-2 [&.dropzone]:border-dashed dropzone [&.dropzone]:border-darkmode-200/60 [&.dropzone]:dark:bg-darkmode-600 [&.dropzone]:dark:border-white/5">
+                                    <div class="fallback">
+                                        <input name="file" type="file">
+                                    </div>
+                                    <div class="dz-message" data-dz-message="">
+                                        <div class="text-lg font-medium">
+                                            Drop files here or click to upload.
+                                        </div>
+                                        <div class="text-gray-600">
+                                            This is just a demo dropzone. Selected files are
+                                            <span class="font-medium">not</span> actually
+                                            uploaded.
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END: Single File Upload -->
+
+                    <div class="mt-5 flex flex-col justify-end gap-2 md:flex-row">
+                        <button data-tw-merge="" type="button" class="transition duration-200 border shadow-sm inline-flex items-center justify-center px-3 rounded-md font-medium cursor-pointer focus:ring-4 focus:ring-primary focus:ring-opacity-20 focus-visible:outline-none dark:focus:ring-slate-700 dark:focus:ring-opacity-50 [&:hover:not(:disabled)]:bg-opacity-90 [&:hover:not(:disabled)]:border-opacity-90 [&:not(button)]:text-center disabled:opacity-70 disabled:cursor-not-allowed w-full border-slate-300 py-3 text-slate-500 dark:border-darkmode-400 md:w-52"><a th:href="@{/teacher/subject/{subjectName}(subjectId=${subject.subjectId}, subjectName=${subject.subjectName})}">Cancel</a></button>
+                        <button data-tw-merge="" type="submit" class="transition duration-200 border shadow-sm inline-flex items-center justify-center px-3 rounded-md font-medium cursor-pointer focus:ring-4 focus:ring-primary focus:ring-opacity-20 focus-visible:outline-none dark:focus:ring-slate-700 dark:focus:ring-opacity-50 [&:hover:not(:disabled)]:bg-opacity-90 [&:hover:not(:disabled)]:border-opacity-90 [&:not(button)]:text-center disabled:opacity-70 disabled:cursor-not-allowed bg-primary border-primary text-white dark:border-primary w-full py-3 md:w-52"><a th:href="@{/teacher/subject/{subjectName}(subjectId=${subject.subjectId}, subjectName=${subject.subjectName})}">Add</a></button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/dist/js/vendors/dom.js}"></script>
+<script th:src="@{/dist/js/vendors/tailwind-merge.js}"></script>
+<script th:src="@{/dist/js/vendors/dropzone.js}"></script>
+<script th:src="@{/dist/js/utils/helper.js}"></script>
+<script th:src="@{/dist/js/vendors/highlight.js}"></script>
+<script th:src="@{/dist/js/vendors/tippy.js}"></script>
+<script th:src="@{/dist/js/vendors/lucide.js}"></script>
+<script th:src="@{/dist/js/vendors/simplebar.js}"></script>
+<script th:src="@{/dist/js/vendors/transition.js}"></script>
+<script th:src="@{/dist/js/vendors/dropdown.js}"></script>
+<script th:src="@{/dist/js/vendors/popper.js}"></script>
+<script th:src="@{/dist/js/vendors/modal.js}"></script>
+<script th:src="@{/dist/js/components/base/theme-color.js}"></script>
+<script th:src="@{/dist/js/components/base/dropzone.js}"></script>
+<script th:src="@{/dist/js/components/base/highlight.js}"></script>
+<script th:src="@{/dist/js/components/base/source.js}"></script>
+<script th:src="@{/dist/js/components/base/preview-component.js}"></script>
+<script th:src="@{/dist/js/themes/rubick.js}"></script>
+<script th:src="@{/dist/js/components/base/lucide.js}"></script>
+<script th:src="@{/dist/js/components/mobile-menu.js}"></script>
+<script th:src="@{/dist/js/components/themes/rubick/top-bar.js}"></script>
+</body>
+</html>

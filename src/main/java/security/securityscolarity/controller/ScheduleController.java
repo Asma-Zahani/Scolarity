@@ -38,6 +38,7 @@ public class ScheduleController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("schedules",scheduleService.testGenerateSchedule(universityAdmin.getUniversity()));
         }
         model.addAttribute("currentUrl", "schedule_list_");
@@ -74,6 +75,7 @@ public class ScheduleController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("teachers",teacherService.findTeacherByUniversity(universityAdmin.getUniversity()));
         }
         model.addAttribute("currentUrl", "schedule_select_teacher");
@@ -82,20 +84,25 @@ public class ScheduleController {
 
     @PostMapping("/findScheduleByTeacher")
     public String findScheduleByTeacher(Model model, @RequestParam(name = "teacherId") Long teacherId) {
-        Teacher teacher = teacherService.findByTeacherID(teacherId);
-        List<Schedule> schedules = teacher.getSchedules();
-        Map<String, Map<String, Schedule>> scheduleMap = new HashMap<>();
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+            Teacher teacher = teacherService.findByTeacherID(teacherId);
+            List<Schedule> schedules = teacher.getSchedules();
+            Map<String, Map<String, Schedule>> scheduleMap = new HashMap<>();
 
-        for (Schedule schedule : schedules) {
-            String chronoName = schedule.getId().getChrono().getChronoName();
-            String dayName = schedule.getId().getDay().getDayName();
-            scheduleMap.putIfAbsent(chronoName, new HashMap<>());
-            scheduleMap.get(chronoName).put(dayName, schedule);
+            for (Schedule schedule : schedules) {
+                String chronoName = schedule.getId().getChrono().getChronoName();
+                String dayName = schedule.getId().getDay().getDayName();
+                scheduleMap.putIfAbsent(chronoName, new HashMap<>());
+                scheduleMap.get(chronoName).put(dayName, schedule);
+            }
+            model.addAttribute("teacher",teacherService.findByTeacherID(teacherId));
+            model.addAttribute("scheduleMap", scheduleMap);
+            model.addAttribute("chronos", chronoService.findByUniversity(universityAdmin.getUniversity()).stream().sorted(Comparator.comparingInt(chrono -> Integer.parseInt(chrono.getChronoName().substring(1)))).toList());
+            model.addAttribute("days", dayService.findAll().stream().sorted(Comparator.comparingInt(Day::getDayNumber)).toList());
         }
-
-        model.addAttribute("scheduleMap", scheduleMap);
-        model.addAttribute("chronos", chronoService.findAll());
-        model.addAttribute("days", dayService.findAll().stream().sorted(Comparator.comparingInt(Day::getDayNumber)).toList());
         model.addAttribute("currentUrl", "schedule_select_teacher");
         return "UniversityAdmin/schedule/scheduleForTeacher";
     }
@@ -105,6 +112,7 @@ public class ScheduleController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("groups",groupService.findByUniversity(universityAdmin.getUniversity()));
         }
         model.addAttribute("currentUrl", "schedule_select_group");
@@ -116,6 +124,7 @@ public class ScheduleController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             List<Schedule> schedules = groupService.findByGroupID(groupId).getSchedules();
             Map<String, Map<String, Map<String, List<Schedule>>>> scheduleMap = new HashMap<>();
             boolean toggleGroup = true;
@@ -143,7 +152,7 @@ public class ScheduleController {
 
             model.addAttribute("scheduleMap", scheduleMap);
             model.addAttribute("group",groupService.findByGroupID(groupId));
-            model.addAttribute("chronos", chronoService.findByUniversity(universityAdmin.getUniversity()));
+            model.addAttribute("chronos", chronoService.findByUniversity(universityAdmin.getUniversity()).stream().sorted(Comparator.comparingInt(chrono -> Integer.parseInt(chrono.getChronoName().substring(1)))).toList());
             model.addAttribute("days", dayService.findAll().stream().sorted(Comparator.comparingInt(Day::getDayNumber)).toList());
         }
         model.addAttribute("currentUrl", "schedule_select_group");

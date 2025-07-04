@@ -6,10 +6,7 @@ import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import security.securityscolarity.entity.Role;
-import security.securityscolarity.entity.Subject;
-import security.securityscolarity.entity.Teacher;
-import security.securityscolarity.entity.University;
+import security.securityscolarity.entity.*;
 import security.securityscolarity.repository.ScheduleRepository;
 import security.securityscolarity.repository.SubjectRepository;
 import security.securityscolarity.repository.TeacherRepository;
@@ -48,6 +45,10 @@ public class TeacherService implements ITeacherService{
 
     public List<Teacher> findTeacherByUniversity(University university) {
         return teacherRepository.findByUniversity(university);
+    }
+
+    public List<Teacher> findBySchedules_IdGroup(Group group) {
+        return teacherRepository.findBySchedules_IdGroup(group);
     }
 
     public List<Teacher> findTeacherByUniversityId(Long id) {

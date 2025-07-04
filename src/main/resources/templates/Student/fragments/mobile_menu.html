@@ -60,7 +60,7 @@
                             Subjects
                         </div>
                     </div>
-                    <a th:if="${subjects > 0}" th:href="@{/student/subjects}" th:class="${currentUrl == '/student/subjects'} ? 'menu menu--active' : 'menu'">
+                    <a th:if="${subjects > 0}" th:href="@{/student/subjects}" th:class="${currentUrl.startsWith('/student/subject')} ? 'menu menu--active' : 'menu'">
                         <div class="menu__icon">
                             <i data-tw-merge="" data-lucide="book" class="stroke-1.5 w-5 h-5"></i>
                         </div>
@@ -88,12 +88,12 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/logout" th:class="${currentUrl == '/logout'} ? 'menu menu--active' : 'menu'">
+                    <a th:class="${currentUrl == '/logout'} ? 'menu menu--active' : 'menu'">
                         <div class="menu__icon">
                             <i data-tw-merge="" data-lucide="log-out" class="stroke-1.5 w-5 h-5"></i>
                         </div>
                         <div class="menu__title">
-                            Logout
+                            <button data-tw-merge data-tw-toggle="modal" data-tw-target="#static-backdrop-modal-preview">Logout</button>
                         </div>
                     </a>
                 </li>

@@ -6,6 +6,7 @@ import security.securityscolarity.entity.Subject;
 import security.securityscolarity.service.IMPL.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import security.securityscolarity.service.IMPL.UniversityService;
 
 import java.util.List;
 
@@ -16,6 +17,13 @@ public class RestSubjectController {
 
     @Autowired
     SubjectService subjectService;
+    @Autowired
+    private UniversityService universityService;
+
+    @GetMapping("/count/{universityId}")
+    public Long getSubjectCountByUniversity(@PathVariable("universityId") Long id) {
+        return subjectService.countByUniversity(universityService.findByUniversityID(id));
+    }
 
     @GetMapping("/count")
     public Long getSubjectCount() {

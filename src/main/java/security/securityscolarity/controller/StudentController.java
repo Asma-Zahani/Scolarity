@@ -34,6 +34,7 @@ public class StudentController {
     public String getStudent(Model model) {CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("allStudent", studentService.findStudentByUniversity(universityAdmin.getUniversity()));
         }
         model.addAttribute("currentUrl", "student_list");
@@ -42,6 +43,11 @@ public class StudentController {
 
     @GetMapping("/detail")
     public String getStudent(@RequestParam("studentId") Long id, Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+        }
         Student student = studentService.findByStudentID(id);
         model.addAttribute("student", student);
         model.addAttribute("currentUrl", "student_detail");
@@ -53,6 +59,7 @@ public class StudentController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("subGroups", subGroupService.findByGroupUniversity(universityAdmin.getUniversity()));
         }
         model.addAttribute("student", new Student());
@@ -81,6 +88,11 @@ public class StudentController {
 
     @GetMapping("/update")
     public String updateStudent(@RequestParam("studentId") Long id, Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+        }
         Student student = studentService.findByStudentID(id);
         model.addAttribute("student", student);
         model.addAttribute("action","Update");

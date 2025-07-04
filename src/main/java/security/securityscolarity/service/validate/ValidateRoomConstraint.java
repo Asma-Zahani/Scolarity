@@ -9,7 +9,7 @@ public class ValidateRoomConstraint {
         RoomConstraint roomConstraint = room.getConstraint();
 
         if (roomConstraint != null) {
-            boolean isRoomUnavailable = roomConstraint.getUnavailableDays().stream()
+            boolean isRoomUnavailable = roomConstraint.getUnavailableChronoDays().stream()
                     .anyMatch(chrono -> chrono.equals(chronoDay));
             if (isRoomUnavailable) {
                 return false;

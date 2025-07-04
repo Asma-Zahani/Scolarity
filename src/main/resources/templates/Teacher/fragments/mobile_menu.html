@@ -32,14 +32,39 @@
                             Schedule
                         </div>
                     </div>
-                    <a th:if="${!schedules.isEmpty()}" th:href="@{/teacher/schedule}" th:class="${currentUrl == '/teacher/schedule'} ? 'menu menu--active' : 'menu'">
+                    <a href="javascript:;" th:if="${!schedules.isEmpty()}" th:class="${currentUrl == '/teacher/schedule' or currentUrl == '/teacher/schedule/selectGroup' or currentUrl == '/teacher/schedule/findScheduleByGroup'} ? 'menu menu--active' : 'menu'">
                         <div class="menu__icon">
                             <i data-tw-merge="" data-lucide="calendar-check" class="stroke-1.5 w-5 h-5"></i>
                         </div>
                         <div class="menu__title">
                             Schedule
+                            <div class="menu__sub-icon transform " th:classappend="${currentUrl == '/teacher/schedule' or currentUrl == '/teacher/schedule/selectGroup' or currentUrl == '/teacher/schedule/findScheduleByGroup'} ? 'rotate-180' : ''">
+                                <i data-tw-merge="" data-lucide="chevron-down" class="stroke-1.5 w-5 h-5"></i>
+                            </div>
                         </div>
                     </a>
+                    <ul th:if="${!schedules.isEmpty()}" th:class="${currentUrl == '/teacher/schedule' or currentUrl == '/teacher/schedule/selectGroup' or currentUrl == '/teacher/schedule/findScheduleByGroup'} ? 'menu__sub-open' : ''">
+                        <li>
+                            <a th:href="@{/teacher/schedule}" th:class="${currentUrl == '/teacher/schedule'} ? 'menu menu--active' : 'menu'">
+                                <div class="menu__icon">
+                                    <i data-tw-merge="" data-lucide="calendar" class="stroke-1.5 w-5 h-5"></i>
+                                </div>
+                                <div class="menu__title">
+                                    My schedule
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/teacher/schedule/selectGroup}" th:class="${currentUrl == '/teacher/schedule/selectGroup' or currentUrl == '/teacher/schedule/findScheduleByGroup'} ? 'menu menu--active' : 'menu'">
+                                <div class="menu__icon">
+                                    <i data-tw-merge="" data-lucide="search" class="stroke-1.5 w-5 h-5"></i>
+                                </div>
+                                <div class="menu__title">
+                                    Schedule by Group
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li>
                     <a th:href="@{/teacher/teachers}" th:class="${currentUrl == '/teacher/teachers'} ? 'menu menu--active' : 'menu'">
@@ -79,7 +104,7 @@
                             Subjects
                         </div>
                     </div>
-                    <a th:if="${subjects > 0}" th:href="@{/teacher/subjects}" th:class="${currentUrl == '/teacher/subjects'} ? 'menu menu--active' : 'menu'">
+                    <a th:if="${subjects > 0}" th:href="@{/teacher/subjects}" th:class="${currentUrl.startsWith('/teacher/subject')} ? 'menu menu--active' : 'menu'">
                         <div class="menu__icon">
                             <i data-tw-merge="" data-lucide="book" class="stroke-1.5 w-5 h-5"></i>
                         </div>
@@ -89,12 +114,12 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/logout" th:class="${currentUrl == '/logout'} ? 'menu menu--active' : 'menu'">
+                    <a th:class="${currentUrl == '/logout'} ? 'menu menu--active' : 'menu'">
                         <div class="menu__icon">
                             <i data-tw-merge="" data-lucide="log-out" class="stroke-1.5 w-5 h-5"></i>
                         </div>
                         <div class="menu__title">
-                            Logout
+                            <button data-tw-merge data-tw-toggle="modal" data-tw-target="#static-backdrop-modal-preview">Logout</button>
                         </div>
                     </a>
                 </li>

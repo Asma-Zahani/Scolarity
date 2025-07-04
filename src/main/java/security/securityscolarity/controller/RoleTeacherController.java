@@ -27,8 +27,6 @@ public class RoleTeacherController {
     @Autowired
     private SubjectService subjectService;
     @Autowired
-    private ScheduleService scheduleService;
-    @Autowired
     private ChronoService chronoService;
     @Autowired
     private DayService dayService;
@@ -46,6 +44,7 @@ public class RoleTeacherController {
         List<Group> distinctGroups = new ArrayList<>();
         List<Subject> allSubjects = new ArrayList<>();
         if (user instanceof Teacher teacher) {
+            model.addAttribute("user", teacher);
             if (teacher.getSubjects() != null) {
                 subjectCount = subjectService.getSubjectCountByTeacher(teacher.getId());
                 allSubjects = subjectService.findByTeacher(teacher).size() > 5 ? subjectService.findByTeacher(teacher).subList(0, 5) : subjectService.findByTeacher(teacher);
@@ -75,6 +74,7 @@ public class RoleTeacherController {
         User user = userService.findByUserID(userDetail.getId());
         int subjectCount = 0;
         if (user instanceof Teacher teacher) {
+            model.addAttribute("user", teacher);
             subjectCount = subjectService.getSubjectCountByTeacher(teacher.getId());
             List<Schedule> schedules = teacher.getSchedules();
             Map<String, Map<String, Schedule>> scheduleMap = new HashMap<>();
@@ -104,6 +104,7 @@ public class RoleTeacherController {
         int studentCount = 0;
         List<Schedule> listSchedules = new ArrayList<>();
         if (user instanceof Teacher teacher) {
+            model.addAttribute("user", teacher);
             model.addAttribute("teachers", teacherService.findTeacherByUniversity(teacher.getUniversity()));
             if (teacher.getSubjects() != null) {
                 subjectCount = subjectService.getSubjectCountByTeacher(teacher.getId());
@@ -128,11 +129,11 @@ public class RoleTeacherController {
         int studentCount = 0;
         List<Schedule> listSchedules = new ArrayList<>();
         if (user instanceof Teacher teacher) {
+            model.addAttribute("user", teacher);
             if (teacher.getSubjects() != null) {
                 subjectCount = subjectService.getSubjectCountByTeacher(teacher.getId());
                 List<Subject> allSubjects = subjectService.findByTeacher(teacher);
-                List<Subject> limitedSubjects = allSubjects.size() > 5 ? allSubjects.subList(0, 5) : allSubjects;
-                model.addAttribute("listSubjects", limitedSubjects);
+                model.addAttribute("listSubjects", allSubjects);
                 listSchedules = teacher.getSchedules();
             }
         }
@@ -144,6 +145,56 @@ public class RoleTeacherController {
         return "Teacher/subjects";
     }
 
+    @RequestMapping(value = "/subject/{subjectName}", method = RequestMethod.GET)
+    public String Subject(Model model, HttpServletRequest request,  @RequestParam("subjectId") Long id) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        int subjectCount = 0;
+        int studentCount = 0;
+        List<Schedule> listSchedules = new ArrayList<>();
+        if (user instanceof Teacher teacher) {
+            model.addAttribute("user", teacher);
+            if (teacher.getSubjects() != null) {
+                subjectCount = subjectService.getSubjectCountByTeacher(teacher.getId());
+                listSchedules = teacher.getSchedules();
+                studentCount = listSchedules.stream().map(schedule -> schedule.getId().getGroup())
+                        .distinct().mapToInt(group -> studentService.countStudentsByGroup(group.getGroupId())).sum();
+                model.addAttribute("subject", subjectService.findBySubjectID(id));
+            }
+        }
+        String currentUrl = request.getRequestURI();
+        model.addAttribute("students", studentCount);
+        model.addAttribute("subjects", subjectCount);
+        model.addAttribute("schedules", listSchedules);
+        model.addAttribute("currentUrl", currentUrl);
+        return "Teacher/subject";
+    }
+
+    @RequestMapping(value = "/subject/addFile", method = RequestMethod.GET)
+    public String addFile(Model model, HttpServletRequest request, @RequestParam("subjectId") Long id) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        int subjectCount = 0;
+        int studentCount = 0;
+        List<Schedule> listSchedules = new ArrayList<>();
+        if (user instanceof Teacher teacher) {
+            model.addAttribute("user", teacher);
+            if (teacher.getSubjects() != null) {
+                subjectCount = subjectService.getSubjectCountByTeacher(teacher.getId());
+                listSchedules = teacher.getSchedules();
+                studentCount = listSchedules.stream().map(schedule -> schedule.getId().getGroup())
+                        .distinct().mapToInt(group -> studentService.countStudentsByGroup(group.getGroupId())).sum();
+                model.addAttribute("subject", subjectService.findBySubjectID(id));
+            }
+        }
+        String currentUrl = request.getRequestURI();
+        model.addAttribute("students", studentCount);
+        model.addAttribute("subjects", subjectCount);
+        model.addAttribute("schedules", listSchedules);
+        model.addAttribute("currentUrl", currentUrl);
+        return "Teacher/addFile";
+    }
+
     @RequestMapping(value = {"/selectGroup", "/schedule/selectGroup"}, method = RequestMethod.GET)
     public String Students(Model model, HttpServletRequest request) {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -152,6 +203,7 @@ public class RoleTeacherController {
         List<Schedule> listSchedules = new ArrayList<>();
         List<Group> distinctGroups = new ArrayList<>();
         if (user instanceof Teacher teacher) {
+            model.addAttribute("user", teacher);
             if (teacher.getSubjects() != null) {
                 subjectCount = subjectService.getSubjectCountByTeacher(teacher.getId());
                 listSchedules = teacher.getSchedules();
@@ -173,6 +225,7 @@ public class RoleTeacherController {
         User user = userService.findByUserID(userDetail.getId());
         int subjectCount = 0;
         if (user instanceof Teacher teacher) {
+            model.addAttribute("user", teacher);
             subjectCount = subjectService.getSubjectCountByTeacher(teacher.getId());
             List<Schedule> schedules = groupService.findByGroupID(groupId).getSchedules();
             Map<String, Map<String, Map<String, List<Schedule>>>> scheduleMap = new HashMap<>();
@@ -217,6 +270,7 @@ public class RoleTeacherController {
         List<Schedule> listSchedules = new ArrayList<>();
         List<Student> students = new ArrayList<>();
         if (user instanceof Teacher teacher) {
+            model.addAttribute("user", teacher);
             subjectCount = subjectService.getSubjectCountByTeacher(teacher.getId());
             listSchedules = teacher.getSchedules();
             students = studentService.findStudentsByGroup(groupId);

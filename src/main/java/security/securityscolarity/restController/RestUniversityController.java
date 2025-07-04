@@ -16,6 +16,11 @@ public class RestUniversityController {
     @Autowired
     UniversityService universityService;
 
+    @GetMapping("/count")
+    public Long getUniversityCount() {
+        return universityService.getUniversityCount();
+    }
+
     @GetMapping
     public List<University> getAllUniversities() {
         return universityService.findAll();

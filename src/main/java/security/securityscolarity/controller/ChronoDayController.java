@@ -32,6 +32,7 @@ public class ChronoDayController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("allChronoDay", chronoDayService.findByUniversity(universityAdmin.getUniversity()));
         }
         model.addAttribute("currentUrl", "chronoDay_list");
@@ -40,30 +41,45 @@ public class ChronoDayController {
 
     @GetMapping("/add")
     public String showAddForm(Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+            model.addAttribute("chronos", chronoService.findByUniversity(universityAdmin.getUniversity()));
+        }
         model.addAttribute("chronoDay", new ChronoDay());
         model.addAttribute("action","Add");
         model.addAttribute("days", dayService.findAll());
-        model.addAttribute("chronos", chronoService.findAll());
         model.addAttribute("currentUrl", "chronoDay_add");
         return "UniversityAdmin/chronoDay/formChronoDay";
     }
 
     @GetMapping("/addChronos")
     public String showAddChronosForm(Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+            model.addAttribute("chronos", chronoService.findByUniversity(universityAdmin.getUniversity()));
+        }
         model.addAttribute("chronoDay", new ChronoDay());
         model.addAttribute("action","Add");
         model.addAttribute("days", dayService.findAll());
-        model.addAttribute("chronos", chronoService.findAll());
         model.addAttribute("currentUrl", "chronoDay_add_chronos");
         return "UniversityAdmin/chronoDay/formChronos";
     }
 
     @GetMapping("/addDays")
     public String showAddDaysForm(Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+            model.addAttribute("chronos", chronoService.findByUniversity(universityAdmin.getUniversity()));
+        }
         model.addAttribute("chronoDay", new ChronoDay());
         model.addAttribute("action","Add");
         model.addAttribute("days", dayService.findAll());
-        model.addAttribute("chronos", chronoService.findAll());
         model.addAttribute("currentUrl", "chronoDay_add_days");
         return "UniversityAdmin/chronoDay/formDays";
     }
@@ -117,6 +133,11 @@ public class ChronoDayController {
 
     @GetMapping("/update")
     public String updateChronoDay(@RequestParam("chronoId") Long chronoId, @RequestParam("dayId") Long dayId, Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+        }
         Chrono chrono = chronoService.findByChronoID(chronoId);
         Day day = dayService.findByDayID(dayId);
         ChronoDay chronoDay = chronoDayService.findByChronoDayId(new ChronoDayId(chrono, day));

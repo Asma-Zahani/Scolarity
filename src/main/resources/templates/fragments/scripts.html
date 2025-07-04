@@ -1,4 +1,5 @@
 <div th:fragment="scripts">
+    <div th:replace="~{fragments/logout :: logout}"></div>
     <script th:src="@{/dist/js/vendors/dom.js}"></script>
     <script th:src="@{/dist/js/vendors/tailwind-merge.js}"></script>
     <script th:src="@{/dist/js/vendors/tom-select.js}"></script>
@@ -13,6 +14,7 @@
     <script th:src="@{/dist/js/vendors/modal.js}"></script>
     <script th:src="@{/dist/js/components/base/theme-color.js}"></script>
     <script th:src="@{/dist/js/components/base/tom-select.js}"></script>
+    <script th:src="@{/dist/js/components/base/dropzone.js}"></script>
     <script th:src="@{/dist/js/components/base/highlight.js}"></script>
     <script th:src="@{/dist/js/components/base/source.js}"></script>
     <script th:src="@{/dist/js/components/base/preview-component.js}"></script>

@@ -29,8 +29,9 @@
                                 <div class="relative block bg-center bg-no-repeat bg-contain before:content-[''] before:pt-[100%] before:w-full before:block bg-file-icon-empty-directory">
                                 </div>
                             </div>
-                            <a class="mt-4 block truncate text-center font-medium" href="#">
-                                <span th:text="*{subject.subjectName}"></span>
+                            <a th:href="@{/teacher/subject/{subjectName}(subjectId=${subject.subjectId}, subjectName=${subject.subjectName})}"
+                               class="mt-4 block truncate text-center font-medium">
+                                <span th:text="${subject.subjectName}"></span>
                             </a>
                         </div>
                     </div>

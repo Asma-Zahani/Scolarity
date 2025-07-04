@@ -40,6 +40,7 @@ public class RoomConstraintController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("roomConstraints", roomConstraintService.findRoomConstraintByRoomBuildingUniversity(universityAdmin.getUniversity()));
         }
         model.addAttribute("currentUrl", "roomConstraint_list");
@@ -48,6 +49,11 @@ public class RoomConstraintController {
 
     @GetMapping("/detail")
     public String getRoomConstraint(@RequestParam("roomConstraintId") Long id, Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+        }
         RoomConstraint roomConstraint = roomConstraintService.findByRoomConstraintID(id);
         model.addAttribute("roomConstraint", roomConstraint);
         model.addAttribute("currentUrl", "roomConstraint_detail");
@@ -59,10 +65,14 @@ public class RoomConstraintController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("rooms",roomService.findByBuildingUniversity(universityAdmin.getUniversity()));
             model.addAttribute("chronoDays",chronoDayService.findByUniversity(universityAdmin.getUniversity()));
         }
-        model.addAttribute("roomConstraint", new RoomConstraint());
+        RoomConstraint roomConstraint = new RoomConstraint();
+        List<Chrono> chronos = Arrays.asList(chronoRepository.findByChronoName("S4"), chronoRepository.findByChronoName("S5"), chronoRepository.findByChronoName("S6"));
+        roomConstraint.initializeUnavailableChronoDays(chronos , dayRepository.findByDayName("Samedi"));
+        model.addAttribute("roomConstraint", roomConstraint);
         model.addAttribute("action", "Add");
         model.addAttribute("currentUrl", "roomConstraint_add");
         return "UniversityAdmin/roomConstraint/formRoomConstraint";
@@ -72,11 +82,9 @@ public class RoomConstraintController {
     public String addRoomConstraint(@ModelAttribute RoomConstraint roomConstraint,
                                     @RequestParam("chronoDayIds") String[] chronoDayIds,
                                     RedirectAttributes redirectAttributes) {
-        System.out.println(Arrays.toString(chronoDayIds));
         List<ChronoDay> unavailableDays = Arrays.stream(chronoDayIds)
                 .map(chronoDayIdStr -> {
-                    String[] parts = chronoDayIdStr.split(",");
-                    System.out.println(Arrays.toString(parts));
+                    String[] parts = chronoDayIdStr.split(";");
                     Long chronoId = Long.parseLong(parts[0]);
                     Long dayId = Long.parseLong(parts[1]);
                     return chronoDayRepository.findById(new ChronoDayId(
@@ -86,7 +94,7 @@ public class RoomConstraintController {
                 })
                 .collect(Collectors.toList());
 
-        roomConstraint.setUnavailableDays(unavailableDays);
+        roomConstraint.setUnavailableChronoDays(unavailableDays);
 
         roomConstraintService.addRoomConstraint(roomConstraint);
         redirectAttributes.addFlashAttribute("successMessage", "Room constraint added");
@@ -105,6 +113,7 @@ public class RoomConstraintController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("rooms",roomService.findByBuildingUniversity(universityAdmin.getUniversity()));
             model.addAttribute("chronoDays",chronoDayService.findByUniversity(universityAdmin.getUniversity()));
         }
@@ -115,7 +124,22 @@ public class RoomConstraintController {
     }
 
     @PostMapping("/updateRoomConstraint")
-    public String updateRoomConstraint(@ModelAttribute RoomConstraint roomConstraint, RedirectAttributes redirectAttributes) {
+    public String updateRoomConstraint(@ModelAttribute RoomConstraint roomConstraint,
+                                       @RequestParam("chronoDayIds") String[] chronoDayIds,
+                                       RedirectAttributes redirectAttributes) {
+        List<ChronoDay> unavailableDays = Arrays.stream(chronoDayIds)
+                .map(chronoDayIdStr -> {
+                    String[] parts = chronoDayIdStr.split(";");
+                    Long chronoId = Long.parseLong(parts[0]);
+                    Long dayId = Long.parseLong(parts[1]);
+                    return chronoDayRepository.findById(new ChronoDayId(
+                            chronoRepository.findByChronoId(chronoId),
+                            dayRepository.findByDayId(dayId))
+                    ).orElseThrow(() -> new RuntimeException("ChronoDay not found"));
+                })
+                .collect(Collectors.toList());
+
+        roomConstraint.setUnavailableChronoDays(unavailableDays);
         roomConstraintService.updateRoomConstraint(roomConstraint.getId(), roomConstraint);
         redirectAttributes.addFlashAttribute("successMessage", "Room constraint updated");
         return "redirect:/roomConstraints";

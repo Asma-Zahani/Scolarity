@@ -65,6 +65,6 @@ public class Group implements Serializable {
 
     @OneToMany(mappedBy = "id.group", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
-    @JsonManagedReference(value = "group-schedules")
+    @JsonIgnore
     private List<Schedule> schedules = new ArrayList<>();
 }

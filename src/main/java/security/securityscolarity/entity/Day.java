@@ -16,7 +16,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class Day implements Serializable {
+public class Day implements Serializable, Comparable<Day> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,4 +26,9 @@ public class Day implements Serializable {
 
     @NonNull
     private Integer dayNumber;
+
+    @Override
+    public int compareTo(Day other) {
+        return Integer.compare(this.dayNumber, other.dayNumber);
+    }
 }

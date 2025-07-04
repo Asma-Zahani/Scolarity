@@ -20,6 +20,11 @@
                 </nav>
                 <div th:replace="~{fragments/profile_top_bar :: profile_top_bar}"></div>
             </div>
+            <div class="col-span-12 lg:col-span-3 2xl:col-span-2">
+                <h2 class="intro-y mr-auto mt-2 text-lg font-medium">
+                    Schedule : <span th:text="${teacher.lastName + ' ' + teacher.firstName}"></span>
+                </h2>
+            </div><br>
             <div class="grid grid-cols-12 gap-6">
                 <div class="col-span-12 2xl:col-span-9">
                     <table data-tw-merge="" class="w-full text-left">

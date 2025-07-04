@@ -1,5 +1,6 @@
 package security.securityscolarity.restController;
 
+import security.securityscolarity.entity.Building;
 import security.securityscolarity.entity.SubGroup;
 import security.securityscolarity.entity.Subject;
 import security.securityscolarity.service.IMPL.SubGroupService;
@@ -34,6 +35,11 @@ public class RestSubGroupController {
     @PostMapping
     public SubGroup addSubGroup(@RequestBody SubGroup subGroup) {
         return subGroupService.addSubGroup(subGroup);
+    }
+
+    @PostMapping("/{groupId}")
+    public SubGroup addSubGroupByGroup(@PathVariable("groupId") Long id, @RequestBody SubGroup subGroup) {
+        return subGroupService.addSubGroupByGroup(subGroup,id);
     }
 
     @DeleteMapping("/{subGroupId}")

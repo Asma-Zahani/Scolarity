@@ -8,10 +8,10 @@
         <version>3.3.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>mywebsite</groupId>
+    <groupId>security</groupId>
     <artifactId>Scolarite</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>Scolarite</name>
     <description>Scolarite</description>
     <url/>
@@ -29,6 +29,7 @@
     </scm>
     <properties>
         <java.version>21</java.version>
+        <start-class>security.securityscolarity.SecurityScolarityApplication</start-class>
     </properties>
     <dependencies>
         <dependency>

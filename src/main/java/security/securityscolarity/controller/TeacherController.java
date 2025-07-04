@@ -35,6 +35,7 @@ public class TeacherController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("allTeacher", teacherService.findTeacherByUniversity(universityAdmin.getUniversity()));
         }
         model.addAttribute("currentUrl", "teacher_list");
@@ -43,6 +44,11 @@ public class TeacherController {
 
     @GetMapping("/detail")
     public String getTeacher(@RequestParam("teacherId") Long id, Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+        }
         Teacher teacher = teacherService.findByTeacherID(id);
         model.addAttribute("teacher", teacher);
         model.addAttribute("currentUrl", "teacher_detail");
@@ -54,6 +60,7 @@ public class TeacherController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("subjects",subjectService.findByUniversity(universityAdmin.getUniversity()));
         }
         model.addAttribute("teacher", new Teacher());
@@ -99,6 +106,7 @@ public class TeacherController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("teachers",teacherService.findTeacherByUniversity(universityAdmin.getUniversity()));
             model.addAttribute("subjects", subjectService.findByUniversity(universityAdmin.getUniversity()));
         }
@@ -142,6 +150,11 @@ public class TeacherController {
 
     @GetMapping("/update")
     public String updateTeacher(@RequestParam("teacherId") Long id, Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+        }
         Teacher teacher = teacherService.findByTeacherID(id);
         model.addAttribute("teacher", teacher);
         model.addAttribute("action","Update");

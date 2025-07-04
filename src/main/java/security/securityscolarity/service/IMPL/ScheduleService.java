@@ -71,10 +71,6 @@ public class ScheduleService {
                 }
             }
 
-            System.out.println("tpsFraction2 : " + tpsFraction2);
-            System.out.println("tpsAutre : " + tpsAutre);
-            System.out.println("course : " + cours);
-
             for (int index = 0; index < tpsFraction2.size(); index += 2) {
                 Subject subject1 = tpsFraction2.get(index);
                 Subject subject2 = (index + 1 < tpsFraction2.size()) ? tpsFraction2.get(index + 1) : null;
@@ -283,7 +279,6 @@ public class ScheduleService {
                     }
                 }
             }
-
             for (Subject subject: cours) {
                 Optional<Room> availableRoom = rooms.stream()
                         .filter(room -> room.getSessionType().equals(subject.getSession()))

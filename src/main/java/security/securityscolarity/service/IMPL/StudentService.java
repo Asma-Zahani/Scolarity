@@ -55,6 +55,12 @@ public class StudentService implements IStudentService {
         student.setPassword(new BCryptPasswordEncoder().encode(student.getPassword()));
         return studentRepository.save(student);
     }
+
+    public Student addStudentByUniversity(Student student, Long universityID) {
+        student.setUniversity(universityService.findByUniversityID(universityID));
+        return studentRepository.save(student);
+    }
+
     public void deleteStudent(Long id) {
         studentRepository.deleteById(id);
     }

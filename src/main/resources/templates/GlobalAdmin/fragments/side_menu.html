@@ -87,12 +87,12 @@
                 </ul>
             </li>
             <li>
-                <a th:href="@{/logout}" th:class="${currentUrl == '/logout'} ? 'side-menu side-menu--active' : 'side-menu'">
+                <a th:class="${currentUrl == '/logout'} ? 'side-menu side-menu--active' : 'side-menu'">
                     <div class="side-menu__icon">
                         <i data-tw-merge="" data-lucide="log-out" class="stroke-1.5 w-5 h-5"></i>
                     </div>
                     <div class="side-menu__title">
-                        Logout
+                        <button data-tw-merge data-tw-toggle="modal" data-tw-target="#static-backdrop-modal-preview">Logout</button>
                     </div>
                 </a>
             </li>

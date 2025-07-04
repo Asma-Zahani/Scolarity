@@ -50,6 +50,11 @@ public class IndexController {
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String adminIndex(Model model, HttpServletRequest request)
 	 {
+		 CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		 User user = userService.findByUserID(userDetail.getId());
+		 if (user instanceof Admin admin) {
+			 model.addAttribute("user", admin);
+		 }
 		 String currentUrl = request.getRequestURI();
 		 List<University> allUniversities = universityService.findAll();
 		 List<University> limitedUniversities = allUniversities.size() > 5 ? allUniversities.subList(0, 5) : allUniversities;
@@ -66,6 +71,7 @@ public class IndexController {
 		CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		User user = userService.findByUserID(userDetail.getId());
 		if (user instanceof UniversityAdmin universityAdmin) {
+			model.addAttribute("user", universityAdmin);
 			List<Teacher> allTeachers = teacherService.findTeacherByUniversity(universityAdmin.getUniversity());
 			List<Teacher> limitedTeachers = allTeachers.size() > 5 ? allTeachers.subList(0, 5) : allTeachers;
 			model.addAttribute("limitedTeachers",limitedTeachers);

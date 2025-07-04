@@ -31,6 +31,7 @@ public class GroupController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("allGroup", groupService.findByUniversity(universityAdmin.getUniversity()));
         }
         model.addAttribute("currentUrl", "group_list");
@@ -39,6 +40,11 @@ public class GroupController {
 
     @GetMapping("/detail")
     public String getGroup(@RequestParam("groupId") Long id, Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+        }
         Group Group = groupService.findByGroupID(id);
         model.addAttribute("group", Group);
         model.addAttribute("currentUrl", "group_detail");
@@ -50,6 +56,7 @@ public class GroupController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("subjects",subjectService.findByUniversity(universityAdmin.getUniversity()));
         }
         model.addAttribute("group", new Group());
@@ -95,6 +102,7 @@ public class GroupController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("groups",groupService.findByUniversity(universityAdmin.getUniversity()));
             model.addAttribute("subjects",subjectService.findByUniversity(universityAdmin.getUniversity()));
         }
@@ -138,6 +146,11 @@ public class GroupController {
 
     @GetMapping("/update")
     public String updateGroup(@RequestParam("groupId") Long id, Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+        }
         Group group = groupService.findByGroupID(id);
         model.addAttribute("group", group);
         model.addAttribute("action","Update");

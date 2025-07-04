@@ -33,6 +33,7 @@ public class RoomController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("allRoom", roomService.findByBuildingUniversity(universityAdmin.getUniversity()));
         }
         model.addAttribute("currentUrl", "room_list");
@@ -41,6 +42,11 @@ public class RoomController {
 
     @GetMapping("/detail")
     public String getRoom(@RequestParam("roomId") Long id, Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+        }
         Room room = roomService.findByRoomID(id);
         model.addAttribute("room", room);
         model.addAttribute("currentUrl", "room_detail");
@@ -52,6 +58,7 @@ public class RoomController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("buildings",buildingService.findByUniversity(universityAdmin.getUniversity()));
         }
         model.addAttribute("room", new Room());
@@ -78,6 +85,11 @@ public class RoomController {
 
     @GetMapping("/update")
     public String updateRoom(@RequestParam("roomId") Long id, Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+        }
         Room room = roomService.findByRoomID(id);
         model.addAttribute("room", room);
         model.addAttribute("action","Update");

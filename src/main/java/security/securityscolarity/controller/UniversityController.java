@@ -1,17 +1,13 @@
 package security.securityscolarity.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import security.securityscolarity.entity.Student;
-import security.securityscolarity.entity.Teacher;
-import security.securityscolarity.entity.University;
-import security.securityscolarity.service.IMPL.StudentService;
-import security.securityscolarity.service.IMPL.TeacherService;
-import security.securityscolarity.service.IMPL.UniversityAdminService;
-import security.securityscolarity.service.IMPL.UniversityService;
+import security.securityscolarity.entity.*;
+import security.securityscolarity.service.IMPL.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +24,16 @@ public class UniversityController {
     private StudentService studentService;
     @Autowired
     private UniversityAdminService universityAdminService;
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/all")
     public String getUniversities(Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof Admin) {
+            model.addAttribute("user", user);
+        }
         List<University> allUniversity = universityService.findAll();
         model.addAttribute("allUniversity", allUniversity);
         model.addAttribute("currentUrl", "university_list");
@@ -39,6 +42,11 @@ public class UniversityController {
 
     @GetMapping("/detail")
     public String getUniversity(@RequestParam("universityId") Long id, Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof Admin) {
+            model.addAttribute("user", user);
+        }
         University university = universityService.findByUniversityID(id);
         model.addAttribute("university", university);
         model.addAttribute("teachers", new ArrayList<>(university.getTeachers()));
@@ -48,6 +56,11 @@ public class UniversityController {
 
     @GetMapping("/add")
     public String showAddForm(Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof Admin) {
+            model.addAttribute("user", user);
+        }
         model.addAttribute("university", new University());
         model.addAttribute("action","Add");
         model.addAttribute("listTeachers", teacherService.getTeacherNotAssigned());
@@ -92,6 +105,11 @@ public class UniversityController {
 
     @GetMapping("/assignTeachers")
     public String assignTeachers(Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof Admin) {
+            model.addAttribute("user", user);
+        }
         model.addAttribute("universities",universityService.findAll());
         model.addAttribute("teachers",teacherService.getTeacherNotAssigned());
         model.addAttribute("currentUrl", "assign_university_teachers");
@@ -100,6 +118,11 @@ public class UniversityController {
 
     @GetMapping("/assignStudents")
     public String assignStudents(Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof Admin) {
+            model.addAttribute("user", user);
+        }
         model.addAttribute("universities",universityService.findAll());
         model.addAttribute("students",studentService.getStudentNotAssignedToUniversity());
         model.addAttribute("currentUrl", "assign_university_students");
@@ -144,6 +167,11 @@ public class UniversityController {
 
     @GetMapping("/update")
     public String updateUniversity(@RequestParam("universityId") Long id, Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof Admin) {
+            model.addAttribute("user", user);
+        }
        University university = universityService.findByUniversityID(id);
        model.addAttribute("university", university);
        model.addAttribute("action","Update");

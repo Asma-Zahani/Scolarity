@@ -71,9 +71,9 @@
                                             <div class="preview relative [&.hide]:overflow-hidden [&.hide]:h-0">
                                                 <select data-placeholder="Select chronoDay(s)" name="chronoDayIds" multiple="multiple" class="tom-select w-full">
                                                     <option th:each="chronoDay : ${chronoDays}"
-                                                            th:value="${chronoDay.id.chrono.chronoId + ',' + chronoDay.id.day.dayId}"
+                                                            th:value="${chronoDay.id.chrono.chronoId + ';' + chronoDay.id.day.dayId}"
                                                             th:text="${chronoDay.id.day.dayName + ' - ' + chronoDay.id.chrono.chronoName}"
-                                                            th:selected="${roomConstraint.unavailableDays != null && roomConstraint.unavailableDays.contains(chronoDay)}"></option>
+                                                            th:selected="${roomConstraint.unavailableChronoDays != null && roomConstraint.unavailableChronoDays.contains(chronoDay)}"></option>
                                                 </select>
                                             </div>
                                         </div>

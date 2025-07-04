@@ -26,6 +26,7 @@ public class BuildingController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("allBuilding", buildingService.findByUniversity(universityAdmin.getUniversity()));
         }
         model.addAttribute("currentUrl", "building_list");
@@ -34,6 +35,11 @@ public class BuildingController {
 
     @GetMapping("/detail")
     public String getBuilding(@RequestParam("buildingId") Long id, Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+        }
         Building building = buildingService.findByBuildingID(id);
         model.addAttribute("building", building);
         model.addAttribute("currentUrl", "building_detail");
@@ -42,6 +48,11 @@ public class BuildingController {
 
     @GetMapping("/add")
     public String showAddForm(Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+        }
         model.addAttribute("building", new Building());
         model.addAttribute("action","Add");
         model.addAttribute("currentUrl", "building_add");
@@ -68,6 +79,11 @@ public class BuildingController {
 
     @GetMapping("/update")
     public String updateBuilding(@RequestParam("buildingId") Long id, Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+        }
        Building building = buildingService.findByBuildingID(id);
        model.addAttribute("building", building);
        model.addAttribute("action","Update");

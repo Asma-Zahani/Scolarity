@@ -40,6 +40,7 @@ public class GroupConstraintController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("groupConstraints", groupConstraintService.findGroupConstraintByGroupUniversity(universityAdmin.getUniversity()));
         }
         model.addAttribute("currentUrl", "groupConstraint_list");
@@ -48,6 +49,11 @@ public class GroupConstraintController {
 
     @GetMapping("/detail")
     public String getGroupConstraint(@RequestParam("groupConstraintId") Long id, Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+        }
         GroupConstraint groupConstraint = groupConstraintService.findByGroupConstraintID(id);
         model.addAttribute("groupConstraint", groupConstraint);
         model.addAttribute("currentUrl", "groupConstraint_detail");
@@ -59,10 +65,14 @@ public class GroupConstraintController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("groups",groupService.findByUniversity(universityAdmin.getUniversity()));
             model.addAttribute("chronoDays",chronoDayService.findByUniversity(universityAdmin.getUniversity()));
         }
-        model.addAttribute("groupConstraint", new GroupConstraint());
+        GroupConstraint groupConstraint = new GroupConstraint();
+        List<Chrono> chronos = Arrays.asList(chronoRepository.findByChronoName("S4"), chronoRepository.findByChronoName("S5"), chronoRepository.findByChronoName("S6"));
+        groupConstraint.initializeUnavailableChronoDays(chronos , dayRepository.findByDayName("Samedi"));
+        model.addAttribute("groupConstraint", groupConstraint);
         model.addAttribute("action", "Add");
         model.addAttribute("currentUrl", "groupConstraint_add");
         return "UniversityAdmin/groupConstraint/formGroupConstraint";
@@ -74,7 +84,7 @@ public class GroupConstraintController {
                                      RedirectAttributes redirectAttributes) {
         List<ChronoDay> unavailableDays = Arrays.stream(chronoDayIds)
                 .map(chronoDayIdStr -> {
-                    String[] parts = chronoDayIdStr.split(",");
+                    String[] parts = chronoDayIdStr.split(";");
                     Long chronoId = Long.parseLong(parts[0]);
                     Long dayId = Long.parseLong(parts[1]);
                     return chronoDayRepository.findById(new ChronoDayId(
@@ -84,7 +94,7 @@ public class GroupConstraintController {
                 })
                 .collect(Collectors.toList());
 
-        groupConstraint.setUnavailableDays(unavailableDays);
+        groupConstraint.setUnavailableChronoDays(unavailableDays);
 
         groupConstraintService.addGroupConstraint(groupConstraint);
         redirectAttributes.addFlashAttribute("successMessage", "Group constraint added");
@@ -103,6 +113,7 @@ public class GroupConstraintController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("groups",groupService.findByUniversity(universityAdmin.getUniversity()));
             model.addAttribute("chronoDays",chronoDayService.findByUniversity(universityAdmin.getUniversity()));
         }
@@ -113,7 +124,23 @@ public class GroupConstraintController {
     }
 
     @PostMapping("/updateGroupConstraint")
-    public String updateGroupConstraint(@ModelAttribute GroupConstraint groupConstraint, RedirectAttributes redirectAttributes) {
+    public String updateGroupConstraint(@ModelAttribute GroupConstraint groupConstraint,
+                                        @RequestParam("chronoDayIds") String[] chronoDayIds,
+                                        RedirectAttributes redirectAttributes) {
+        List<ChronoDay> unavailableDays = Arrays.stream(chronoDayIds)
+                .map(chronoDayIdStr -> {
+                    String[] parts = chronoDayIdStr.split(";");
+                    Long chronoId = Long.parseLong(parts[0]);
+                    Long dayId = Long.parseLong(parts[1]);
+                    return chronoDayRepository.findById(new ChronoDayId(
+                            chronoRepository.findByChronoId(chronoId),
+                            dayRepository.findByDayId(dayId))
+                    ).orElseThrow(() -> new RuntimeException("ChronoDay not found"));
+                })
+                .collect(Collectors.toList());
+
+        groupConstraint.setUnavailableChronoDays(unavailableDays);
+
         groupConstraintService.updateGroupConstraint(groupConstraint.getId(), groupConstraint);
         redirectAttributes.addFlashAttribute("successMessage", "Group constraint updated");
         return "redirect:/groupConstraints";

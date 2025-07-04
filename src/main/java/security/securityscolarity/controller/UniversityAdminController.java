@@ -1,13 +1,14 @@
 package security.securityscolarity.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import security.securityscolarity.entity.University;
-import security.securityscolarity.entity.UniversityAdmin;
+import security.securityscolarity.entity.*;
 import security.securityscolarity.service.IMPL.UniversityAdminService;
 import security.securityscolarity.service.IMPL.UniversityService;
+import security.securityscolarity.service.IMPL.UserService;
 
 import java.util.List;
 
@@ -19,9 +20,16 @@ public class UniversityAdminController {
     UniversityAdminService universityAdminService;
     @Autowired
     private UniversityService universityService;
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/all")
     public String getUniversityAdmin(Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof Admin) {
+            model.addAttribute("user", user);
+        }
         model.addAttribute("allUniversityAdmin", universityAdminService.findAll());
         model.addAttribute("currentUrl", "universityAdmin_list");
         return "GlobalAdmin/universityAdmin/allUniversityAdmin";
@@ -29,6 +37,11 @@ public class UniversityAdminController {
 
     @GetMapping("/detail")
     public String getUniversityAdmin(@RequestParam("universityAdminId") Long id, Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof Admin) {
+            model.addAttribute("user", user);
+        }
         UniversityAdmin universityAdmin = universityAdminService.findByUniversityAdminID(id);
         model.addAttribute("universityAdmin", universityAdmin);
         model.addAttribute("currentUrl", "universityAdmin_detail");
@@ -37,6 +50,11 @@ public class UniversityAdminController {
 
     @GetMapping("/add")
     public String showAddForm(Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof Admin) {
+            model.addAttribute("user", user);
+        }
         model.addAttribute("universityAdmin", new UniversityAdmin());
         model.addAttribute("action","Add");
         model.addAttribute("universities", universityService.getUniversityNotAssignedToAdminUniversity());
@@ -58,6 +76,11 @@ public class UniversityAdminController {
 
     @GetMapping("/update")
     public String updateUniversityAdmin(@RequestParam("universityAdminId") Long id, Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof Admin) {
+            model.addAttribute("user", user);
+        }
         UniversityAdmin universityAdmin = universityAdminService.findByUniversityAdminID(id);
         List<University> universities = universityService.getUniversityNotAssignedToAdminUniversity();
         if (universityAdmin.getUniversity() != null) {

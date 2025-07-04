@@ -24,12 +24,24 @@ public class RoomConstraint extends BaseConstraint implements Serializable {
 
     @ManyToMany
     @JoinTable(
-            name = "room_constraint_unavailable_days",
+            name = "room_constraint_unavailable_chronoDays",
             joinColumns = @JoinColumn(name = "constraint_id"),
             inverseJoinColumns = {
                     @JoinColumn(name = "chrono_id", referencedColumnName = "chrono_id"),
                     @JoinColumn(name = "day_id", referencedColumnName = "day_id")
             }
     )
-    private List<ChronoDay> unavailableDays = new ArrayList<>();
+    private List<ChronoDay> unavailableChronoDays = new ArrayList<>();
+
+    public void initializeUnavailableChronoDays(List<Chrono> chronos, Day day) {
+        for (Chrono chrono : chronos) {
+            ChronoDayId chronoDayId = new ChronoDayId();
+            chronoDayId.setChrono(chrono);
+            chronoDayId.setDay(day);
+
+            ChronoDay chronoDay = new ChronoDay(chronoDayId);
+
+            unavailableChronoDays.add(chronoDay);
+        }
+    }
 }

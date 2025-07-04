@@ -32,6 +32,7 @@ public class ChronoController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("allChrono", chronoService.findByUniversity(universityAdmin.getUniversity()));
         }
         model.addAttribute("currentUrl", "chrono_list");
@@ -40,6 +41,11 @@ public class ChronoController {
 
     @GetMapping("/detail")
     public String getChrono(@RequestParam("chronoId") Long id, Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+        }
         Chrono chrono = chronoService.findByChronoID(id);
         model.addAttribute("chrono", chrono);
         model.addAttribute("currentUrl", "chrono_detail");
@@ -48,6 +54,11 @@ public class ChronoController {
 
     @GetMapping("/add")
     public String showAddForm(Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+        }
         model.addAttribute("chrono", new Chrono());
         model.addAttribute("action","Add");
         model.addAttribute("currentUrl", "chrono_add");
@@ -75,6 +86,11 @@ public class ChronoController {
 
     @GetMapping("/update")
     public String updateChrono(@RequestParam("chronoId") Long id, Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+        }
         Chrono chrono = chronoService.findByChronoID(id);
         model.addAttribute("chrono", chrono);
         model.addAttribute("action","Update");

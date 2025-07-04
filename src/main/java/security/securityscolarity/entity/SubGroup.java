@@ -31,7 +31,7 @@ public class SubGroup implements Serializable {
     @JsonBackReference(value = "group-subGroups")
     private Group group;
 
-    @OneToMany(mappedBy = "subGroup", cascade = CascadeType.PERSIST, orphanRemoval = false)
+    @OneToMany(mappedBy = "subGroup", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @ToString.Exclude
     private Set<Student> students;
 }

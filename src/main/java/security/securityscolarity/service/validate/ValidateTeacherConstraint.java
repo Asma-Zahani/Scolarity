@@ -18,6 +18,13 @@ public class ValidateTeacherConstraint {
             }
         }
 
+        if (chronoDay.getId().getDay().getDayName().equals("Samedi") &&
+                (chronoDay.getId().getChrono().getChronoName().equals("S6") ||
+                        chronoDay.getId().getChrono().getChronoName().equals("S5") ||
+                        chronoDay.getId().getChrono().getChronoName().equals("S4"))) {
+            return false;
+        }
+
         return schedules.stream().noneMatch(schedule ->
                 schedule.getTeacher().equals(teacher) &&
                         schedule.getId().getDay().equals(chronoDay.getId().getDay()) &&
@@ -26,56 +33,51 @@ public class ValidateTeacherConstraint {
     }
 
     public static boolean validateConstraints(TeacherConstraint constraint, List<Schedule> schedules, ChronoDay chronoDay) {
-        if (constraint.getUnavailableDays().contains(chronoDay)) {
+        if (constraint.getUnavailableDays().contains(chronoDay.getId().getDay())) {
             return false;
         }
 
+        if (constraint.getUnavailableChronoDays().contains(chronoDay)) {
+            return false;
+        }
         long totalDaysScheduled = schedules.stream()
+                .filter(schedule -> schedule.getTeacher().equals(constraint.getTeacher()))
                 .map(schedule -> schedule.getId().getDay())
                 .distinct()
                 .count();
         if (totalDaysScheduled > constraint.getMaxDaysPerWeek()) {
             return false;
         }
-
-        if (totalDaysScheduled < constraint.getMinDaysPerWeek()) {
+        if (calculateConsecutiveDays(schedules, constraint.getTeacher()) > constraint.getMaxConsecutiveDays()) {
             return false;
         }
 
-        if (calculateConsecutiveDays(schedules) > constraint.getMaxConsecutiveDays()) {
+        if (calculateDailyGaps(schedules, chronoDay , constraint.getTeacher()) > constraint.getMaxDailyGaps()) {
             return false;
         }
 
-        if (calculateDailyGaps(schedules, chronoDay) > constraint.getMaxDailyGaps()) {
+        if (calculateWeeklyGaps(schedules, constraint.getTeacher()) > constraint.getMaxWeeklyGaps()) {
             return false;
         }
 
-        if (calculateWeeklyGaps(schedules) > constraint.getMaxWeeklyGaps()) {
+        if (calculateDailyHours(schedules, chronoDay, constraint.getTeacher()) > constraint.getMaxDailyHours()) {
             return false;
         }
 
-        if (calculateDailyHours(schedules, chronoDay) > constraint.getMaxDailyHours()) {
+//        if (calculateRestHours(schedules, constraint.getTeacher()) != 0 && calculateRestHours(schedules, constraint.getTeacher()) < constraint.getMinRestHours()) {
+//            return false;
+//        }
+
+        if (calculateDailyAmplitude(schedules, chronoDay, constraint.getTeacher()) > constraint.getMaxDailyAmplitude()) {
             return false;
         }
 
-        if (calculateDailyHours(schedules, chronoDay) < constraint.getMinDailyHours()) {
-            return false;
-        }
-
-        if (calculateRestHours(schedules) < constraint.getMinRestHours()) {
-            return false;
-        }
-
-        if (calculateDailyAmplitude(schedules, chronoDay) > constraint.getMaxDailyAmplitude()) {
-            return false;
-        }
-
-
-        return calculateContinuousHours(schedules) <= constraint.getMaxContinuousHours();
+        return calculateContinuousHours(schedules , constraint.getTeacher()) <= constraint.getMaxContinuousHours();
     }
 
-    private static long calculateConsecutiveDays(List<Schedule> schedules) {
+    private static long calculateConsecutiveDays(List<Schedule> schedules, Teacher teacher) {
         return schedules.stream()
+                .filter(schedule -> schedule.getTeacher().equals(teacher))
                 .map(schedule -> schedule.getId().getDay())
                 .distinct()
                 .sorted()
@@ -90,8 +92,9 @@ public class ValidateTeacherConstraint {
                 });
     }
 
-    private static long calculateDailyGaps(List<Schedule> schedules, ChronoDay chronoDay) {
+    private static long calculateDailyGaps(List<Schedule> schedules, ChronoDay chronoDay, Teacher teacher) {
         List<Integer> hours = schedules.stream()
+                .filter(schedule -> schedule.getTeacher().equals(teacher))
                 .filter(schedule -> schedule.getId().getDay().equals(chronoDay.getId().getDay()))
                 .map(schedule -> schedule.getId().getChrono().getStartTime().getHour())
                 .distinct()
@@ -102,12 +105,12 @@ public class ValidateTeacherConstraint {
         for (int i = 1; i < hours.size(); i++) {
             gaps += hours.get(i) - hours.get(i - 1) - 1;
         }
-        System.out.println(gaps);
         return gaps;
     }
 
-    private static long calculateWeeklyGaps(List<Schedule> schedules) {
+    private static long calculateWeeklyGaps(List<Schedule> schedules, Teacher teacher) {
         List<Integer> weekDays = schedules.stream()
+                .filter(schedule -> schedule.getTeacher().equals(teacher))
                 .map(schedule -> schedule.getId().getDay().getDayNumber()) // Supposons que tu as dayNumber pour identifier les jours de la semaine
                 .distinct()
                 .sorted()
@@ -121,8 +124,9 @@ public class ValidateTeacherConstraint {
         return gaps;
     }
 
-    private static long calculateContinuousHours(List<Schedule> schedules) {
+    private static long calculateContinuousHours(List<Schedule> schedules, Teacher teacher) {
         List<Integer> hours = schedules.stream()
+                .filter(schedule -> schedule.getTeacher().equals(teacher))
                 .map(schedule -> schedule.getId().getChrono().getStartTime().getHour())
                 .sorted()
                 .toList();
@@ -135,8 +139,9 @@ public class ValidateTeacherConstraint {
         return continuousHours;
     }
 
-    private static long calculateDailyHours(List<Schedule> schedules, ChronoDay chronoDay) {
+    private static long calculateDailyHours(List<Schedule> schedules, ChronoDay chronoDay, Teacher teacher) {
         List<Integer> hours = schedules.stream()
+                .filter(schedule -> schedule.getTeacher().equals(teacher))
                 .filter(schedule -> schedule.getId().getDay().equals(chronoDay.getId().getDay()))
                 .map(schedule -> schedule.getId().getChrono().getStartTime().getHour()) // On suppose que Chrono contient l'heure de début
                 .distinct()
@@ -153,9 +158,10 @@ public class ValidateTeacherConstraint {
     }
 
 
-    private static long calculateRestHours(List<Schedule> schedules) {
+    private static long calculateRestHours(List<Schedule> schedules, Teacher teacher) {
         // Extraire les horaires des Chrono associés aux jours travaillés
         List<LocalTime> workTimes = schedules.stream()
+                .filter(schedule -> schedule.getTeacher().equals(teacher))
                 .map(schedule -> schedule.getId().getChrono().getEndTime()) // Utilisation de l'heure de fin de Chrono
                 .distinct()
                 .sorted()
@@ -171,9 +177,10 @@ public class ValidateTeacherConstraint {
         return restHours;
     }
 
-    private static long calculateDailyAmplitude(List<Schedule> schedules, ChronoDay chronoDay) {
+    private static long calculateDailyAmplitude(List<Schedule> schedules, ChronoDay chronoDay, Teacher teacher) {
         // Filter schedules that match the given ChronoDay
         List<LocalTime> startTimes = schedules.stream()
+                .filter(schedule -> schedule.getTeacher().equals(teacher))
                 .filter(schedule -> schedule.getId().getDay().equals(chronoDay.getId().getDay()))  // Filter by day
                 .map(schedule -> schedule.getId().getChrono().getStartTime())  // Extract start times
                 .distinct()
@@ -181,6 +188,7 @@ public class ValidateTeacherConstraint {
                 .toList();
 
         List<LocalTime> endTimes = schedules.stream()
+                .filter(schedule -> schedule.getTeacher().equals(teacher))
                 .filter(schedule -> schedule.getId().getDay().equals(chronoDay.getId().getDay()))  // Filter by day
                 .map(schedule -> schedule.getId().getChrono().getEndTime())  // Extract end times
                 .distinct()

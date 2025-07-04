@@ -10,5 +10,6 @@ import java.util.List;
 @Repository
 public interface ChronoRepository extends JpaRepository<Chrono, Long> {
     Chrono findByChronoId(Long id);
+    Chrono findByChronoName(String chronoName);
     List<Chrono> findByUniversity(University university);
 }

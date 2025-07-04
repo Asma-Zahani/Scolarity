@@ -6,6 +6,7 @@ import security.securityscolarity.entity.Subject;
 import security.securityscolarity.service.IMPL.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import security.securityscolarity.service.IMPL.UniversityService;
 
 import java.util.List;
 
@@ -16,10 +17,17 @@ public class RestRoomController {
 
     @Autowired
     RoomService roomService;
+    @Autowired
+    private UniversityService universityService;
 
     @GetMapping
     public List<Room> getAllRooms() {
         return roomService.findAll();
+    }
+
+    @GetMapping("/count/{universityId}")
+    public Long getRoomCountByUniversity(@PathVariable("universityId") Long id) {
+        return roomService.countByUniversity(universityService.findByUniversityID(id));
     }
 
     @GetMapping("/university/{universityId}")

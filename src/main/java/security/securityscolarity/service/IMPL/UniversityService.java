@@ -5,10 +5,8 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import security.securityscolarity.entity.Student;
-import security.securityscolarity.entity.Teacher;
-import security.securityscolarity.entity.University;
-import security.securityscolarity.repository.UniversityRepository;
+import security.securityscolarity.entity.*;
+import security.securityscolarity.repository.*;
 import security.securityscolarity.service.IUniversityService;
 
 import java.util.List;
@@ -47,9 +45,6 @@ public class UniversityService implements IUniversityService{
             for (Student student : university.getStudents()) {
                 student.setUniversity(null);
             }
-        }
-        if (university.getUniversityAdmin() != null) {
-            university.getUniversityAdmin().setUniversity(null);
         }
         universityRepository.deleteById(id);
     }

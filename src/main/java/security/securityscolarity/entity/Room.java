@@ -1,5 +1,6 @@
 package security.securityscolarity.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -38,7 +39,7 @@ public class Room {
     private RoomConstraint constraint;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
-    @JsonManagedReference(value = "room-schedules")
+    @JsonIgnore
     @ToString.Exclude
     private List<Schedule> schedules;
 }

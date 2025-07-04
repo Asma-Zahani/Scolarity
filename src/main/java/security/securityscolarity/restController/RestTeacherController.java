@@ -4,6 +4,7 @@ import security.securityscolarity.entity.Teacher;
 import security.securityscolarity.service.IMPL.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import security.securityscolarity.service.IMPL.UniversityService;
 
 import java.util.List;
 
@@ -14,6 +15,13 @@ public class RestTeacherController {
 
     @Autowired
     TeacherService teacherService;
+    @Autowired
+    private UniversityService universityService;
+
+    @GetMapping("/count/{universityId}")
+    public Long getTeacherCountByUniversity(@PathVariable("universityId") Long id) {
+        return teacherService.countByUniversity(universityService.findByUniversityID(id));
+    }
 
     @GetMapping("/count")
     public Long getTeacherCount() {
@@ -44,7 +52,8 @@ public class RestTeacherController {
     public Teacher addTeacherByUniversity(@PathVariable("universityId") Long id, @RequestBody Teacher teacher) {
         return teacherService.addTeacherByUniversity(teacher,id);
     }
-        @DeleteMapping("/{teacherId}")
+
+    @DeleteMapping("/{teacherId}")
     public String deleteTeacher(@PathVariable("teacherId") Long id) {
         teacherService.deleteTeacher(id);
         return "Teacher with ID " + id + " deleted successfully";

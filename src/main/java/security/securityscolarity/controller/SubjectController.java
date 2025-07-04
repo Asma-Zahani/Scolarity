@@ -34,6 +34,7 @@ public class SubjectController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("allSubject", subjectService.findByUniversity(universityAdmin.getUniversity()));
         }
         model.addAttribute("currentUrl", "subject_list");
@@ -42,6 +43,11 @@ public class SubjectController {
 
     @GetMapping("/detail")
     public String getSubject(@RequestParam("subjectId") Long id, Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+        }
         Subject subject = subjectService.findBySubjectID(id);
         model.addAttribute("subject", subject);
         model.addAttribute("currentUrl", "subject_detail");
@@ -53,6 +59,7 @@ public class SubjectController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("teachers",teacherService.findTeacherByUniversity(universityAdmin.getUniversity()));
             model.addAttribute("groups", groupService.findByUniversity(universityAdmin.getUniversity()));
         }
@@ -105,6 +112,11 @@ public class SubjectController {
 
     @GetMapping("/update")
     public String updateSubject(@RequestParam("subjectId") Long id, Model model) {
+        CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findByUserID(userDetail.getId());
+        if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
+        }
         Subject subject = subjectService.findBySubjectID(id);
         model.addAttribute("subject", subject);
         model.addAttribute("action","Update");
@@ -156,6 +168,7 @@ public class SubjectController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("subjects", subjectService.findByUniversity(universityAdmin.getUniversity()));
             model.addAttribute("teachers", teacherService.findTeacherByUniversity(universityAdmin.getUniversity()));
         }
@@ -168,6 +181,7 @@ public class SubjectController {
         CustomUserDetail userDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findByUserID(userDetail.getId());
         if (user instanceof UniversityAdmin universityAdmin) {
+            model.addAttribute("user", universityAdmin);
             model.addAttribute("subjects", subjectService.findByUniversity(universityAdmin.getUniversity()));
             model.addAttribute("groups", groupService.findByUniversity(universityAdmin.getUniversity()));
         }

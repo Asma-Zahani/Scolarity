@@ -5,6 +5,7 @@ import security.securityscolarity.entity.University;
 import security.securityscolarity.service.IMPL.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import security.securityscolarity.service.IMPL.UniversityService;
 
 import java.util.List;
 
@@ -15,6 +16,13 @@ public class RestStudentController {
 
     @Autowired
     StudentService studentService;
+    @Autowired
+    private UniversityService universityService;
+
+    @GetMapping("/count/{universityId}")
+    public Long getStudentCountByUniversity(@PathVariable("universityId") Long id) {
+        return studentService.countByUniversity(universityService.findByUniversityID(id));
+    }
 
     @GetMapping("/count")
     public Long getStudentCount() {
@@ -39,6 +47,11 @@ public class RestStudentController {
     @PostMapping
     public Student addStudent(@RequestBody Student student) {
         return studentService.addStudent(student);
+    }
+
+    @PostMapping("/{universityId}")
+    public Student addStudentByUniversity(@PathVariable("universityId") Long id, @RequestBody Student Student) {
+        return studentService.addStudentByUniversity(Student,id);
     }
 
     @DeleteMapping("/{studentId}")

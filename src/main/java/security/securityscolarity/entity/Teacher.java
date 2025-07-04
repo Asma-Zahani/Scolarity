@@ -1,6 +1,7 @@
 package security.securityscolarity.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -43,7 +44,7 @@ public class Teacher extends User implements Serializable {
     private TeacherConstraint constraint;
 
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
-    @JsonManagedReference(value = "teacher-schedules")
+    @JsonIgnore
     @ToString.Exclude
     private List<Schedule> schedules;
 }
